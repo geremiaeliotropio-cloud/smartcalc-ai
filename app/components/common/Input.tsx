@@ -1,17 +1,17 @@
 interface InputProps {
   label: string;
-  type?: string;
   value: string;
-  placeholder?: string;
   onChange: (value: string) => void;
+  type?: string;
+  placeholder?: string;
 }
 
 export default function Input({
   label,
-  type = "text",
   value,
-  placeholder,
   onChange,
+  type = "text",
+  placeholder,
 }: InputProps) {
   return (
     <div>
@@ -24,7 +24,7 @@ export default function Input({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-5 py-4 outline-none focus:border-cyan-400"
+        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-5 py-4 text-white outline-none transition focus:border-cyan-400"
       />
     </div>
   );

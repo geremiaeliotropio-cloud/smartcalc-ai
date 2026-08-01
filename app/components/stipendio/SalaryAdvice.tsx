@@ -5,7 +5,7 @@ interface Props {
   nettoMensile: number;
   mensilita: number;
 }
-export function getSalaryAdvice(...) { ... }
+
 export default function SalaryAdvice({
   ral,
   nettoMensile,
