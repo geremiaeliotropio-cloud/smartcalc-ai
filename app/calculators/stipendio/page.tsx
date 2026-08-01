@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-
+import SalaryInsights from "../../components/stipendio/SalaryInsights";
 import PdfButton from "../../components/common/PdfButton";
-
+import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
 import SalaryChart from "../../components/stipendio/SalaryChart";
 import SalaryForm from "../../components/stipendio/SalaryForm";
 import SalaryResults from "../../components/stipendio/SalaryResults";
 import SalarySummary from "../../components/stipendio/SalarySummary";
 import SalaryBreakdown from "../../components/stipendio/SalaryBreakdown";
-
+import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
 import { exportSalaryPDF } from "../../lib/pdf";
 import { calculateSalary } from "../../lib/salary";
 
@@ -119,7 +119,22 @@ export default function SalaryPage() {
                 irpef={irpef}
                 addizionali={addizionali}
               />
-
+              <SalaryInsights
+                ral={Number(ral)}
+                nettoMensile={nettoMensile}
+                nettoAnnuo={nettoAnnuo}
+                trattenute={trattenute}
+              />
+              <SalaryAdvice
+                ral={Number(ral)}
+                nettoMensile={nettoMensile}
+                mensilita={Number(mensilita)}
+              />
+              <SalaryAdvice
+                ral={Number(ral)}
+                nettoMensile={nettoMensile}
+               mensilita={Number(mensilita)}
+              />
               <SalaryChart
                 netto={nettoAnnuo}
                 trattenute={trattenute}
