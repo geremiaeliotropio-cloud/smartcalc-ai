@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 
-import SalaryForm from "../../components/stipendio/SalaryForm";
-import SalarySummary from "../../components/stipendio/SalarySummary";
-import SalaryResults from "../../components/stipendio/SalaryResults";
+import PdfButton from "../../components/common/PdfButton";
+
 import SalaryChart from "../../components/stipendio/SalaryChart";
+import SalaryForm from "../../components/stipendio/SalaryForm";
+import SalaryResults from "../../components/stipendio/SalaryResults";
+import SalarySummary from "../../components/stipendio/SalarySummary";
+
+import { exportSalaryPDF } from "../../lib/pdf";
 import { calculateSalary } from "../../lib/salary";
 
 export default function SalaryPage() {
@@ -17,19 +21,37 @@ export default function SalaryPage() {
   const [trattenute, setTrattenute] = useState<number | null>(null);
 
   function calcolaStipendio() {
-    const RAL = Number(ral);
-    const mens = Number(mensilita);
+    const ralNumber = Number(ral);
+    const mensilitaNumber = Number(mensilita);
 
-    if (RAL <= 0) {
+    if (ralNumber <= 0) {
       alert("Inserisci una RAL valida.");
       return;
     }
 
-    const risultato = calculateSalary(RAL, mens);
+    const risultato = calculateSalary(ralNumber, mensilitaNumber);
 
     setNettoAnnuo(risultato.nettoAnnuo);
     setNettoMensile(risultato.nettoMensile);
     setTrattenute(risultato.trattenute);
+  }
+
+  function scaricaPDF() {
+    if (
+      nettoMensile === null ||
+      nettoAnnuo === null ||
+      trattenute === null
+    ) {
+      return;
+    }
+
+    exportSalaryPDF(
+      Number(ral),
+      Number(mensilita),
+      nettoMensile,
+      nettoAnnuo,
+      trattenute
+    );
   }
 
   return (
@@ -73,6 +95,10 @@ export default function SalaryPage() {
                 netto={nettoAnnuo}
                 trattenute={trattenute}
               />
+
+              <div className="mt-8 flex justify-center">
+                <PdfButton onClick={scaricaPDF} />
+              </div>
             </>
           )}
       </section>

@@ -5,9 +5,9 @@ import { useState } from "react";
 import CompoundForm from "../../components/compound/CompoundForm";
 import CompoundResults from "../../components/compound/CompoundResults";
 import CompoundChart from "../../components/compound/CompoundChart";
-
+import { exportCompoundPDF } from "../../lib/pdf";
 import { generateCompoundData } from "../../lib/compound";
-
+import PdfButton from "../../components/common/PdfButton";
 export default function CompoundInterestPage() {
   const [capitale, setCapitale] = useState("");
   const [versamento, setVersamento] = useState("");
@@ -64,7 +64,17 @@ export default function CompoundInterestPage() {
     setInteressi(null);
     setGrafico([]);
   }
-
+  function scaricaPDF() {
+  exportCompoundPDF(
+    Number(capitale),
+    Number(versamento),
+    Number(tasso),
+    Number(anni),
+    investito!,
+    interessi!,
+    totale!
+  );
+}
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto max-w-4xl px-6 py-20">
@@ -102,8 +112,11 @@ export default function CompoundInterestPage() {
 
               <CompoundChart data={grafico} />
             </>
+            
           )}
-
+<div className="mt-8">
+  <PdfButton onClick={scaricaPDF} />
+</div>
       </section>
     </main>
   );
