@@ -1,17 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import SalaryInsights from "../../components/stipendio/SalaryInsights";
+
 import PdfButton from "../../components/common/PdfButton";
+import AIButton from "../../components/common/AIButton";
+import AIResponse from "../../components/common/AIResponse";
+
+import SalaryForm from "../../components/stipendio/SalaryForm";
+import SalarySummary from "../../components/stipendio/SalarySummary";
+import SalaryResults from "../../components/stipendio/SalaryResults";
+import SalaryBreakdown from "../../components/stipendio/SalaryBreakdown";
+import SalaryInsights from "../../components/stipendio/SalaryInsights";
 import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
 import SalaryChart from "../../components/stipendio/SalaryChart";
-import SalaryForm from "../../components/stipendio/SalaryForm";
-import SalaryResults from "../../components/stipendio/SalaryResults";
-import SalarySummary from "../../components/stipendio/SalarySummary";
-import SalaryBreakdown from "../../components/stipendio/SalaryBreakdown";
-import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
-import { exportSalaryPDF } from "../../lib/pdf";
+
 import { calculateSalary } from "../../lib/salary";
+import { exportSalaryPDF } from "../../lib/pdf";
+import { explainCalculation } from "../../lib/ai";
 
 export default function SalaryPage() {
   const [ral, setRal] = useState("");
@@ -25,6 +30,9 @@ export default function SalaryPage() {
   const [nettoMensile, setNettoMensile] = useState<number | null>(null);
   const [nettoAnnuo, setNettoAnnuo] = useState<number | null>(null);
   const [trattenute, setTrattenute] = useState<number | null>(null);
+
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState("");
 
   function calcolaStipendio() {
     const ralNumber = Number(ral);
@@ -48,9 +56,37 @@ export default function SalaryPage() {
     setImponibile(risultato.imponibile);
     setIrpef(risultato.irpef);
     setAddizionali(risultato.addizionali);
+
+    setAiResponse("");
   }
 
   function scaricaPDF() {
+    if (
+      nettoMensile === null ||
+      nettoAnnuo === null ||
+      trattenute === null ||
+      contributi === null ||
+      imponibile === null ||
+      irpef === null ||
+      addizionali === null
+    ) {
+      return;
+    }
+
+    exportSalaryPDF(
+      Number(ral),
+      Number(mensilita),
+      nettoMensile,
+      nettoAnnuo,
+      trattenute,
+      contributi,
+      imponibile,
+      irpef,
+      addizionali
+    );
+  }
+
+  async function chiediAI() {
     if (
       nettoMensile === null ||
       nettoAnnuo === null ||
@@ -59,17 +95,31 @@ export default function SalaryPage() {
       return;
     }
 
-    exportSalaryPDF(
-  Number(ral),
-  Number(mensilita),
-  nettoMensile,
-  nettoAnnuo,
-  trattenute,
-  contributi!,
-  imponibile!,
-  irpef!,
-  addizionali!
-);
+    try {
+      setAiLoading(true);
+
+      const risposta = await explainCalculation({
+        calculator: "stipendio",
+        data: {
+          ral: Number(ral),
+          mensilita: Number(mensilita),
+          nettoMensile,
+          nettoAnnuo,
+          contributi,
+          imponibile,
+          irpef,
+          addizionali,
+          trattenute,
+        },
+      });
+
+      setAiResponse(risposta);
+    } catch (error) {
+      console.error(error);
+      alert("Errore durante la richiesta AI.");
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   return (
@@ -119,22 +169,20 @@ export default function SalaryPage() {
                 irpef={irpef}
                 addizionali={addizionali}
               />
+
               <SalaryInsights
                 ral={Number(ral)}
                 nettoMensile={nettoMensile}
                 nettoAnnuo={nettoAnnuo}
                 trattenute={trattenute}
               />
+
               <SalaryAdvice
                 ral={Number(ral)}
                 nettoMensile={nettoMensile}
                 mensilita={Number(mensilita)}
               />
-              <SalaryAdvice
-                ral={Number(ral)}
-                nettoMensile={nettoMensile}
-               mensilita={Number(mensilita)}
-              />
+
               <SalaryChart
                 netto={nettoAnnuo}
                 trattenute={trattenute}
@@ -143,6 +191,17 @@ export default function SalaryPage() {
               <div className="mt-8 flex justify-center">
                 <PdfButton onClick={scaricaPDF} />
               </div>
+
+              <div className="mt-6 flex justify-center">
+                <AIButton
+                  onClick={chiediAI}
+                  loading={aiLoading}
+                />
+              </div>
+
+              {aiResponse && (
+                <AIResponse response={aiResponse} />
+              )}
             </>
           )}
       </section>
