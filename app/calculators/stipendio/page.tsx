@@ -6,6 +6,7 @@ import SalaryForm from "../../components/stipendio/SalaryForm";
 import SalarySummary from "../../components/stipendio/SalarySummary";
 import SalaryResults from "../../components/stipendio/SalaryResults";
 import SalaryChart from "../../components/stipendio/SalaryChart";
+import { calculateSalary } from "../../lib/salary";
 
 export default function SalaryPage() {
   const [ral, setRal] = useState("");
@@ -17,20 +18,18 @@ export default function SalaryPage() {
 
   function calcolaStipendio() {
     const RAL = Number(ral);
+    const mens = Number(mensilita);
 
     if (RAL <= 0) {
       alert("Inserisci una RAL valida.");
       return;
     }
 
-    // Calcolo provvisorio
-    const netto = RAL * 0.7;
-    const mensile = netto / Number(mensilita);
-    const tasse = RAL - netto;
+    const risultato = calculateSalary(RAL, mens);
 
-    setNettoAnnuo(netto);
-    setNettoMensile(mensile);
-    setTrattenute(tasse);
+    setNettoAnnuo(risultato.nettoAnnuo);
+    setNettoMensile(risultato.nettoMensile);
+    setTrattenute(risultato.trattenute);
   }
 
   return (
