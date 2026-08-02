@@ -1,19 +1,13 @@
-import OpenAI from "openai";
 import { NextResponse } from "next/server";
-
+import { openai } from "../../lib/openai";
 import { buildSalaryPrompt } from "../../lib/prompts";
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: Request) {
   try {
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         {
-          message:
-            "OPENAI_API_KEY non trovata nel file .env.local",
+          message: "OPENAI_API_KEY non trovata.",
         },
         {
           status: 500,
@@ -23,26 +17,9 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    let prompt = "";
-
-    switch (body.calculator) {
-      case "stipendio":
-        prompt = buildSalaryPrompt(body.data);
-        break;
-
-      default:
-        prompt = `
-Sei SmartCalc AI.
-
-Analizza i seguenti dati e fornisci una spiegazione semplice.
-
-${JSON.stringify(body.data, null, 2)}
-`;
-    }
-
-    const response = await client.responses.create({
+    const response = await openai.responses.create({
       model: "gpt-4.1-mini",
-      input: prompt,
+      input: buildSalaryPrompt(body.data),
     });
 
     return NextResponse.json({

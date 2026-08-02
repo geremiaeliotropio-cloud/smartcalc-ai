@@ -11,9 +11,9 @@ import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
 import SalaryChart from "../../components/stipendio/SalaryChart";
 import AIAdvisor from "../../components/stipendio/AIAdvisor";
 
-import PdfButton from "../../components/common/PdfButton";
-import AIButton from "../../components/common/AIButton";
-import AIResponse from "../../components/common/AIResponse";
+import PdfButton from "../../components/pdf/PdfButton";
+import AIButton from "../../components/ai/AIButton";
+import AIResponse from "../../components/ai/AIResponse";
 
 import { calculateSalary } from "../../lib/salary";
 import { exportSalaryPDF } from "../../lib/pdf";

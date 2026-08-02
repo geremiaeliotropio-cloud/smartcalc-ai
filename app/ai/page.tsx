@@ -1,71 +1,201 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import AIButton from "../components/common/AIButton";
-import AIResponse from "../components/common/AIResponse";
+import ChatHistory, {
+  Message,
+} from "../components/ai/ChatHistory";
+import ChatInput from "../components/ai/ChatInput";
+import TypingIndicator from "../components/ai/TypingIndicator";
+
+const initialMessage: Message = {
+  role: "assistant",
+  content:
+    "👋 Ciao! Sono SmartCalc AI. Posso aiutarti con stipendi, mutui, prestiti, pensioni, IVA e finanza personale. Fai pure una domanda!",
+};
 
 export default function AIPage() {
+  const [messages, setMessages] = useState<Message[]>([
+    initialMessage,
+  ]);
+
   const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function askAI() {
-    if (!question.trim()) return;
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("smartcalc-chat");
+
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved));
+      } catch {
+        console.error("Errore nel caricamento della chat.");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "smartcalc-chat",
+      JSON.stringify(messages)
+    );
+  }, [messages]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, loading]);
+
+  async function sendMessage() {
+    if (!question.trim() || loading) {
+      return;
+    }
+
+    const currentQuestion = question.trim();
+
+    const updatedMessages: Message[] = [
+      ...messages,
+      {
+        role: "user",
+        content: currentQuestion,
+      },
+    ];
+
+    setMessages(updatedMessages);
+    setQuestion("");
+    setLoading(true);
 
     try {
-      setLoading(true);
+      const apiMessages = updatedMessages.map((message) => ({
+        role: message.role,
+        content: [
+          {
+            type: "input_text",
+            text: message.content,
+          },
+        ],
+      }));
 
-      const res = await fetch("/api/ai/chat", {
+      const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          question,
+          messages: apiMessages,
         }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      setResponse(data.message);
-    } catch {
-      alert("Errore durante la richiesta.");
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.message,
+        },
+      ]);
+    } catch (error: any) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            error.message ??
+            "❌ Si è verificato un errore durante la richiesta.",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
   }
 
+  function handleExample(example: string) {
+    setQuestion(example);
+  }
+
+  function clearConversation() {
+    localStorage.removeItem("smartcalc-chat");
+    setMessages([initialMessage]);
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto max-w-5xl px-6 py-20">
-
         <h1 className="text-5xl font-bold">
           🤖 SmartCalc AI
         </h1>
 
         <p className="mt-4 text-slate-400">
-          Fai qualsiasi domanda su stipendi, mutui,
-          prestiti, pensione e finanza personale.
+          Il tuo assistente intelligente per stipendi,
+          mutui, prestiti, pensioni e finanza personale.
         </p>
 
-        <textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Es. Mi conviene accettare una RAL di 42.000 €?"
-          className="mt-10 h-40 w-full rounded-2xl border border-slate-700 bg-slate-900 p-5 outline-none focus:border-cyan-400"
-        />
-
-        <div className="mt-6">
-          <AIButton
-            onClick={askAI}
-            loading={loading}
-          />
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={clearConversation}
+            className="rounded-xl border border-red-500 px-4 py-2 text-red-400 transition hover:bg-red-500 hover:text-white"
+          >
+            🗑 Cancella conversazione
+          </button>
         </div>
 
-        {response && (
-          <AIResponse response={response} />
-        )}
+        <div className="mt-10 rounded-3xl border border-slate-800 bg-slate-900 p-6">
+          <div className="max-h-[550px] space-y-4 overflow-y-auto">
+            <ChatHistory messages={messages} />
+
+            {loading && <TypingIndicator />}
+
+            <div ref={bottomRef} />
+          </div>
+
+          <div
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+          >
+            <ChatInput
+              value={question}
+              onChange={setQuestion}
+              onSend={sendMessage}
+            />
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="mb-5 text-xl font-semibold">
+            Domande suggerite
+          </h2>
+
+          <div className="flex flex-wrap gap-3">
+            {[
+              "Mi conviene una RAL di 40.000 €?",
+              "Come funziona l'IRPEF?",
+              "Quanto dovrei risparmiare ogni mese?",
+              "Posso permettermi un mutuo da 250.000 €?",
+              "Mi conviene un fondo pensione?",
+              "Come posso aumentare il mio stipendio netto?",
+            ].map((example) => (
+              <button
+                key={example}
+                onClick={() => handleExample(example)}
+                className="rounded-full border border-slate-700 px-4 py-2 text-sm transition hover:border-cyan-400 hover:text-cyan-400"
+              >
+                {example}
+              </button>
+            ))}
+          </div>
+        </div>
       </section>
     </main>
   );

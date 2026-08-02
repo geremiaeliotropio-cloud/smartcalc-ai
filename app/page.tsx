@@ -1,21 +1,24 @@
-import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Stats from "./components/Stats";
 import PopularCalculators from "./components/PopularCalculators";
 import Features from "./components/Features";
-import CTA from "./components/CTA";
-import Footer from "./components/Footer";
 import Categories from "./components/Categories";
+import Stats from "./components/Stats";
+import CTA from "./components/CTA";
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <Navbar />
-
+    <main className="bg-slate-950 text-white">
       <Hero />
+
+      <Categories />
 
       <PopularCalculators />
 
       <Features />
+
+      <Stats />
+
+      <CTA />
     </main>
   );
 }
