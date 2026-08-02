@@ -19,6 +19,7 @@ import { calculateSalary } from "../../lib/salary";
 import { exportSalaryPDF } from "../../lib/pdf";
 import { explainCalculation } from "../../lib/ai";
 import { generateSalaryAdvice } from "../../lib/advisor";
+import { saveSalaryCalculation } from "../../lib/storage";
 
 export default function SalaryPage() {
   const [ral, setRal] = useState("");
@@ -58,6 +59,20 @@ export default function SalaryPage() {
     setImponibile(risultato.imponibile);
     setIrpef(risultato.irpef);
     setAddizionali(risultato.addizionali);
+
+    saveSalaryCalculation({
+      ral: ralNumber,
+      mensilita: mensilitaNumber,
+      createdAt: new Date().toISOString(),
+
+      nettoMensile: risultato.nettoMensile,
+      nettoAnnuo: risultato.nettoAnnuo,
+      trattenute: risultato.trattenute,
+      contributi: risultato.contributi,
+      imponibile: risultato.imponibile,
+      irpef: risultato.irpef,
+      addizionali: risultato.addizionali,
+    });
 
     setAiResponse("");
   }
@@ -201,7 +216,9 @@ export default function SalaryPage() {
               />
 
               <div className="mt-8 flex justify-center">
-                <SalaryPdfButton onClick={scaricaPDF} />
+                <SalaryPdfButton
+                  onClick={scaricaPDF}
+                />
               </div>
 
               <div className="mt-6 flex justify-center">
@@ -212,7 +229,9 @@ export default function SalaryPage() {
               </div>
 
               {aiResponse && (
-                <AIResponse response={aiResponse} />
+                <AIResponse
+                  response={aiResponse}
+                />
               )}
             </>
           )}
