@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 
-import PdfButton from "../../components/common/PdfButton";
-import AIButton from "../../components/common/AIButton";
-import AIResponse from "../../components/common/AIResponse";
-
 import SalaryForm from "../../components/stipendio/SalaryForm";
 import SalarySummary from "../../components/stipendio/SalarySummary";
 import SalaryResults from "../../components/stipendio/SalaryResults";
@@ -13,10 +9,16 @@ import SalaryBreakdown from "../../components/stipendio/SalaryBreakdown";
 import SalaryInsights from "../../components/stipendio/SalaryInsights";
 import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
 import SalaryChart from "../../components/stipendio/SalaryChart";
+import AIAdvisor from "../../components/stipendio/AIAdvisor";
+
+import PdfButton from "../../components/common/PdfButton";
+import AIButton from "../../components/common/AIButton";
+import AIResponse from "../../components/common/AIResponse";
 
 import { calculateSalary } from "../../lib/salary";
 import { exportSalaryPDF } from "../../lib/pdf";
 import { explainCalculation } from "../../lib/ai";
+import { generateSalaryAdvice } from "../../lib/advisor";
 
 export default function SalaryPage() {
   const [ral, setRal] = useState("");
@@ -60,32 +62,6 @@ export default function SalaryPage() {
     setAiResponse("");
   }
 
-  function scaricaPDF() {
-    if (
-      nettoMensile === null ||
-      nettoAnnuo === null ||
-      trattenute === null ||
-      contributi === null ||
-      imponibile === null ||
-      irpef === null ||
-      addizionali === null
-    ) {
-      return;
-    }
-
-    exportSalaryPDF(
-      Number(ral),
-      Number(mensilita),
-      nettoMensile,
-      nettoAnnuo,
-      trattenute,
-      contributi,
-      imponibile,
-      irpef,
-      addizionali
-    );
-  }
-
   async function chiediAI() {
     if (
       nettoMensile === null ||
@@ -114,13 +90,46 @@ export default function SalaryPage() {
       });
 
       setAiResponse(risposta);
-    } catch (error) {
-      console.error(error);
-      alert("Errore durante la richiesta AI.");
+    } catch (error: any) {
+      alert(error.message);
     } finally {
       setAiLoading(false);
     }
   }
+
+  function scaricaPDF() {
+    if (
+      nettoMensile === null ||
+      nettoAnnuo === null ||
+      trattenute === null ||
+      contributi === null ||
+      imponibile === null ||
+      irpef === null ||
+      addizionali === null
+    ) {
+      return;
+    }
+
+    exportSalaryPDF(
+      Number(ral),
+      Number(mensilita),
+      nettoMensile,
+      nettoAnnuo,
+      trattenute,
+      contributi,
+      imponibile,
+      irpef,
+      addizionali
+    );
+  }
+
+  const advisor =
+    nettoMensile !== null
+      ? generateSalaryAdvice(
+          Number(ral),
+          nettoMensile
+        )
+      : [];
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -133,7 +142,8 @@ export default function SalaryPage() {
         </h1>
 
         <p className="mt-4 text-slate-400">
-          Calcola una stima dello stipendio netto partendo dalla RAL.
+          Calcola una stima dello stipendio netto
+          partendo dalla RAL.
         </p>
 
         <SalaryForm
@@ -182,6 +192,8 @@ export default function SalaryPage() {
                 nettoMensile={nettoMensile}
                 mensilita={Number(mensilita)}
               />
+
+              <AIAdvisor advice={advisor} />
 
               <SalaryChart
                 netto={nettoAnnuo}

@@ -1,20 +1,15 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
-const apiKey = process.env.OPENAI_API_KEY;
-
-console.log(
-  "OPENAI_API_KEY:",
-  apiKey ? apiKey.substring(0, 15) + "..." : "NON TROVATA"
-);
+import { buildSalaryPrompt } from "../../lib/prompts";
 
 const client = new OpenAI({
-  apiKey,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(req: Request) {
   try {
-    if (!apiKey) {
+    if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         {
           message:
@@ -28,27 +23,26 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const response = await client.responses.create({
-      model: "gpt-4.1-mini",
-      input: `
+    let prompt = "";
+
+    switch (body.calculator) {
+      case "stipendio":
+        prompt = buildSalaryPrompt(body.data);
+        break;
+
+      default:
+        prompt = `
 Sei SmartCalc AI.
 
-Spiega il seguente calcolo in italiano.
+Analizza i seguenti dati e fornisci una spiegazione semplice.
 
-Calcolatore:
-${body.calculator}
-
-Dati:
 ${JSON.stringify(body.data, null, 2)}
+`;
+    }
 
-La risposta deve:
-
-- essere semplice;
-- spiegare il significato dei risultati;
-- spiegare tasse e contributi se presenti;
-- dare alcuni consigli pratici;
-- non inventare dati.
-`,
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
     });
 
     return NextResponse.json({
@@ -62,7 +56,7 @@ La risposta deve:
       {
         message:
           error?.message ??
-          "Errore sconosciuto durante la richiesta OpenAI.",
+          "Errore durante la richiesta OpenAI.",
       },
       {
         status: 500,
