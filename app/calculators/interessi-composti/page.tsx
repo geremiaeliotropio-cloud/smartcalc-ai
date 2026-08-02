@@ -5,9 +5,13 @@ import { useState } from "react";
 import CompoundForm from "../../components/compound/CompoundForm";
 import CompoundResults from "../../components/compound/CompoundResults";
 import CompoundChart from "../../components/compound/CompoundChart";
+
+import PdfButton from "../../components/common/PdfButton";
+
 import { exportCompoundPDF } from "../../lib/pdf";
 import { generateCompoundData } from "../../lib/compound";
-import PdfButton from "../../components/common/PdfButton";
+import { saveCompoundCalculation } from "../../lib/storage";
+
 export default function CompoundInterestPage() {
   const [capitale, setCapitale] = useState("");
   const [versamento, setVersamento] = useState("");
@@ -38,10 +42,11 @@ export default function CompoundInterestPage() {
     }
 
     const investitoTotale = P + M * n;
+    const interessiTotali = saldo - investitoTotale;
 
     setTotale(saldo);
     setInvestito(investitoTotale);
-    setInteressi(saldo - investitoTotale);
+    setInteressi(interessiTotali);
 
     setGrafico(
       generateCompoundData(
@@ -51,6 +56,19 @@ export default function CompoundInterestPage() {
         Number(anni)
       )
     );
+
+    saveCompoundCalculation({
+      capitale: P,
+      versamento: M,
+      tasso: Number(tasso),
+      anni: Number(anni),
+
+      investito: investitoTotale,
+      interessi: interessiTotali,
+      totale: saldo,
+
+      createdAt: new Date().toISOString(),
+    });
   }
 
   function reset() {
@@ -64,27 +82,40 @@ export default function CompoundInterestPage() {
     setInteressi(null);
     setGrafico([]);
   }
+
   function scaricaPDF() {
-  exportCompoundPDF(
-    Number(capitale),
-    Number(versamento),
-    Number(tasso),
-    Number(anni),
-    investito!,
-    interessi!,
-    totale!
-  );
-}
+    if (
+      totale === null ||
+      investito === null ||
+      interessi === null
+    ) {
+      return;
+    }
+
+    exportCompoundPDF(
+      Number(capitale),
+      Number(versamento),
+      Number(tasso),
+      Number(anni),
+      investito,
+      interessi,
+      totale
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto max-w-4xl px-6 py-20">
-
         <h1 className="text-5xl font-bold">
-          Interessi <span className="text-cyan-400">Composti</span>
+          Interessi{" "}
+          <span className="text-cyan-400">
+            Composti
+          </span>
         </h1>
 
         <p className="mt-4 text-slate-400">
-          Simula la crescita del tuo investimento nel tempo.
+          Simula la crescita del tuo investimento
+          nel tempo.
         </p>
 
         <CompoundForm
@@ -110,13 +141,17 @@ export default function CompoundInterestPage() {
                 totale={totale}
               />
 
-              <CompoundChart data={grafico} />
+              <CompoundChart
+                data={grafico}
+              />
+
+              <div className="mt-8">
+                <PdfButton
+                  onClick={scaricaPDF}
+                />
+              </div>
             </>
-            
           )}
-<div className="mt-8">
-  <PdfButton onClick={scaricaPDF} />
-</div>
       </section>
     </main>
   );
