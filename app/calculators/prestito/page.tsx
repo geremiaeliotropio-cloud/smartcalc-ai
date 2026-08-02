@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { saveLoanCalculation } from "../../lib/storage";
+
 export default function PrestitoPage() {
   const [importo, setImporto] = useState("");
   const [tasso, setTasso] = useState("");
@@ -22,7 +24,9 @@ export default function PrestitoPage() {
     const r = Number(tasso) / 100 / 12;
     const n = Number(anni) * 12;
 
-    if (!P || !r || !n) return;
+    if (!P || !r || !n) {
+      return;
+    }
 
     const rataMensile =
       (P * r * Math.pow(1 + r, n)) /
@@ -34,12 +38,23 @@ export default function PrestitoPage() {
     setRata(rataMensile);
     setTotale(totalePagato);
     setInteressi(interessiTotali);
+
+    saveLoanCalculation({
+      importo: P,
+      durata: Number(anni),
+      tasso: Number(tasso),
+
+      rata: rataMensile,
+      interessi: interessiTotali,
+      totale: totalePagato,
+
+      createdAt: new Date().toISOString(),
+    });
   }
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto max-w-4xl px-6 py-20">
-
         <h1 className="text-5xl font-bold">
           Calcolatore{" "}
           <span className="text-cyan-400">
@@ -52,12 +67,13 @@ export default function PrestitoPage() {
         </p>
 
         <div className="mt-10 space-y-5">
-
           <input
             type="number"
             placeholder="Importo (€)"
             value={importo}
-            onChange={(e) => setImporto(e.target.value)}
+            onChange={(e) =>
+              setImporto(e.target.value)
+            }
             className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
           />
 
@@ -65,7 +81,9 @@ export default function PrestitoPage() {
             type="number"
             placeholder="Tasso annuo (%)"
             value={tasso}
-            onChange={(e) => setTasso(e.target.value)}
+            onChange={(e) =>
+              setTasso(e.target.value)
+            }
             className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
           />
 
@@ -73,22 +91,22 @@ export default function PrestitoPage() {
             type="number"
             placeholder="Durata (anni)"
             value={anni}
-            onChange={(e) => setAnni(e.target.value)}
+            onChange={(e) =>
+              setAnni(e.target.value)
+            }
             className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
           />
 
           <button
             onClick={calcolaPrestito}
-            className="w-full rounded-xl bg-cyan-500 py-4 font-semibold text-slate-950 hover:bg-cyan-400"
+            className="w-full rounded-xl bg-cyan-500 py-4 font-semibold text-slate-950 transition hover:bg-cyan-400"
           >
             Calcola prestito
           </button>
-
         </div>
 
         {rata !== null && (
           <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
             <h2 className="text-3xl font-bold text-cyan-400">
               {formatEuro(rata)}
             </h2>
@@ -98,7 +116,6 @@ export default function PrestitoPage() {
             </p>
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
-
               <div className="rounded-xl bg-slate-800 p-5">
                 <p className="text-slate-400">
                   Interessi Totali
@@ -118,12 +135,9 @@ export default function PrestitoPage() {
                   {formatEuro(totale!)}
                 </h3>
               </div>
-
             </div>
-
           </div>
         )}
-
       </section>
     </main>
   );
