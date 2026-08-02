@@ -27,14 +27,24 @@ export default function Navbar() {
           >
             Calcolatori
           </Link>
-
+          <Link
+           href="/dashboard"
+           className="transition hover:text-cyan-400"
+           >
+           📊 Dashboard
+          </Link>
           <Link
             href="/ai"
             className="transition hover:text-cyan-400"
           >
             🤖 AI
           </Link>
-
+          <Link
+            href="/advisor"
+            className="transition hover:text-cyan-400"
+        >
+             📊 Advisor
+          </Link>
         </nav>
 
       </div>

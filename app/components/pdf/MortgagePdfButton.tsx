@@ -26,7 +26,7 @@ const formatEuro = (value: number) =>
     currency: "EUR",
   }).format(value);
 
-export default function PdfButton({
+export default function MortgagePdfButton({
   importo,
   tasso,
   anni,
@@ -35,7 +35,7 @@ export default function PdfButton({
   totale,
   piano,
 }: Props) {
-  const generaPdf = () => {
+  function generaPdf() {
     const doc = new jsPDF();
 
     doc.setFontSize(22);
@@ -69,12 +69,12 @@ export default function PdfButton({
     });
 
     doc.save("mutuo-smartcalc.pdf");
-  };
+  }
 
   return (
     <button
       onClick={generaPdf}
-      className="mt-8 w-full rounded-xl bg-emerald-500 py-4 font-semibold text-slate-950 hover:bg-emerald-400"
+      className="mt-8 w-full rounded-xl bg-emerald-500 py-4 font-semibold text-slate-950 transition hover:bg-emerald-400"
     >
       📄 Scarica PDF
     </button>

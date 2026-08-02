@@ -1,8 +1,9 @@
-import { calculateSalary, SalaryResult } from "./salary";
+import { calculateSalary } from "./salary";
+import type { SalaryCalculation } from "../types/salary";
 
 export interface SalaryComparisonResult {
-  attuale: SalaryResult;
-  nuova: SalaryResult;
+  attuale: SalaryCalculation;
+  nuova: SalaryCalculation;
 
   differenzaMensile: number;
   differenzaAnnua: number;

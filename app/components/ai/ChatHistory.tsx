@@ -1,13 +1,10 @@
-import ChatMessage from "./ChatMessage";
-
-export interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import type { ChatMessage } from "../../types/ai";
 
 interface Props {
-  messages: Message[];
+  messages: ChatMessage[];
 }
+
+import ChatMessageComponent from "./ChatMessage";
 
 export default function ChatHistory({
   messages,
@@ -15,7 +12,7 @@ export default function ChatHistory({
   return (
     <div className="space-y-4">
       {messages.map((message, index) => (
-        <ChatMessage
+        <ChatMessageComponent
           key={index}
           role={message.role}
           content={message.content}

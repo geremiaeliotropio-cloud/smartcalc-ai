@@ -1,12 +1,14 @@
 "use client";
-import MortgageSummary from "../../components/mutuo/MortgageSummary";
-import PdfButton from "../../components/mutuo/PdfButton";
+
 import { useState } from "react";
 
 import MortgageForm from "../../components/mutuo/MortgageForm";
+import MortgageSummary from "../../components/mutuo/MortgageSummary";
 import MortgageResults from "../../components/mutuo/MortgageResults";
-import AmortizationTable from "../../components/mutuo/AmortizationTable";
 import AmortizationChart from "../../components/mutuo/AmortizationChart";
+import AmortizationTable from "../../components/mutuo/AmortizationTable";
+
+import MortgagePdfButton from "../../components/pdf/MortgagePdfButton";
 
 import { generateAmortization } from "../../lib/amortization";
 
@@ -26,7 +28,9 @@ export default function MutuoPage() {
     const r = Number(tasso) / 100 / 12;
     const n = Number(anni) * 12;
 
-    if (!P || !r || !n) return;
+    if (!P || !r || !n) {
+      return;
+    }
 
     const rataMensile =
       (P * r * Math.pow(1 + r, n)) /
@@ -51,7 +55,6 @@ export default function MutuoPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto max-w-4xl px-6 py-20">
-
         <h1 className="text-5xl font-bold">
           Calcolatore{" "}
           <span className="text-cyan-400">
@@ -60,8 +63,8 @@ export default function MutuoPage() {
         </h1>
 
         <p className="mt-4 text-slate-400">
-          Calcola la rata mensile e visualizza
-          il piano di ammortamento completo.
+          Calcola la rata mensile e visualizza il
+          piano di ammortamento completo.
         </p>
 
         <MortgageForm
@@ -73,41 +76,42 @@ export default function MutuoPage() {
           setAnni={setAnni}
           onCalculate={calcolaMutuo}
         />
-               {rata !== null &&
-  interessi !== null &&
-  totale !== null && (
-    <>
-    <MortgageSummary
-  importo={Number(importo)}
-  tasso={Number(tasso)}
-  anni={Number(anni)}
-/>
-      <MortgageResults
-        rata={rata}
-        interessi={interessi}
-        totale={totale}
-      />
 
-      <AmortizationChart
-        data={piano}
-      />
+        {rata !== null &&
+          interessi !== null &&
+          totale !== null && (
+            <>
+              <MortgageSummary
+                importo={Number(importo)}
+                tasso={Number(tasso)}
+                anni={Number(anni)}
+              />
 
-            <PdfButton
-        importo={Number(importo)}
-        tasso={Number(tasso)}
-        anni={Number(anni)}
-        rata={rata}
-        interessi={interessi}
-        totale={totale}
-        piano={piano}
-      />
+              <MortgageResults
+                rata={rata}
+                interessi={interessi}
+                totale={totale}
+              />
 
-      <AmortizationTable
-        data={piano}
-      />
-    </>
-)}
+              <AmortizationChart
+                data={piano}
+              />
 
+              <MortgagePdfButton
+                importo={Number(importo)}
+                tasso={Number(tasso)}
+                anni={Number(anni)}
+                rata={rata}
+                interessi={interessi}
+                totale={totale}
+                piano={piano}
+              />
+
+              <AmortizationTable
+                data={piano}
+              />
+            </>
+          )}
       </section>
     </main>
   );

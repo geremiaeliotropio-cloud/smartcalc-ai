@@ -2,20 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import ChatHistory, {
-  Message,
-} from "../components/ai/ChatHistory";
+import ChatHistory from "../components/ai/ChatHistory";
+
+import type { ChatMessage } from "../types/ai";
 import ChatInput from "../components/ai/ChatInput";
 import TypingIndicator from "../components/ai/TypingIndicator";
 
-const initialMessage: Message = {
+const initialMessage: ChatMessage = {
   role: "assistant",
   content:
     "👋 Ciao! Sono SmartCalc AI. Posso aiutarti con stipendi, mutui, prestiti, pensioni, IVA e finanza personale. Fai pure una domanda!",
 };
 
 export default function AIPage() {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] =
+useState<ChatMessage[]>([
     initialMessage,
   ]);
 
@@ -56,7 +57,7 @@ export default function AIPage() {
 
     const currentQuestion = question.trim();
 
-    const updatedMessages: Message[] = [
+    const updatedMessages: ChatMessage[] = [
       ...messages,
       {
         role: "user",

@@ -29,8 +29,12 @@ const formatEuro = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-export default function AmortizationChart({ data }: Props) {
-  if (data.length === 0) return null;
+export default function AmortizationChart({
+  data,
+}: Props) {
+  if (data.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-6">
@@ -39,16 +43,26 @@ export default function AmortizationChart({ data }: Props) {
       </h2>
 
       <div className="h-[400px]">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
           <LineChart data={data}>
             <CartesianGrid stroke="#334155" />
 
             <XAxis dataKey="rata" />
 
-            <YAxis tickFormatter={formatEuro} />
+            <YAxis
+              tickFormatter={(value) =>
+                formatEuro(Number(value))
+              }
+            />
 
             <Tooltip
-              formatter={(value: number) => formatEuro(value)}
+              formatter={(value) => [
+                formatEuro(Number(value)),
+                "",
+              ]}
             />
 
             <Legend />

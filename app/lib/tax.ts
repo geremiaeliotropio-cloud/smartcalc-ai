@@ -1,12 +1,8 @@
-export interface TaxResult {
-  contributi: number;
-  imponibile: number;
-  irpef: number;
-  addizionali: number;
-  trattenute: number;
-}
+import type { TaxResult } from "../types/tax";
 
-export function calculateTaxes(ral: number): TaxResult {
+export function calculateTaxes(
+  ral: number
+): TaxResult {
   // Contributi INPS (stima)
   const contributi = ral * 0.0919;
 
@@ -29,7 +25,7 @@ export function calculateTaxes(ral: number): TaxResult {
       (imponibile - 50000) * 0.43;
   }
 
-  // Addizionali (stima)
+  // Addizionali regionali/comunali (stima)
   const addizionali = imponibile * 0.02;
 
   return {

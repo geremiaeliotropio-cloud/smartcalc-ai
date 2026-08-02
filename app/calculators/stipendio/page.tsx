@@ -11,7 +11,7 @@ import SalaryAdvice from "../../components/stipendio/SalaryAdvice";
 import SalaryChart from "../../components/stipendio/SalaryChart";
 import AIAdvisor from "../../components/stipendio/AIAdvisor";
 
-import PdfButton from "../../components/pdf/PdfButton";
+import SalaryPdfButton from "../../components/pdf/SalaryPdfButton";
 import AIButton from "../../components/ai/AIButton";
 import AIResponse from "../../components/ai/AIResponse";
 
@@ -201,7 +201,7 @@ export default function SalaryPage() {
               />
 
               <div className="mt-8 flex justify-center">
-                <PdfButton onClick={scaricaPDF} />
+                <SalaryPdfButton onClick={scaricaPDF} />
               </div>
 
               <div className="mt-6 flex justify-center">

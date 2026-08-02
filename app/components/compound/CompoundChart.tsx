@@ -26,7 +26,9 @@ const formatEuro = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-export default function CompoundChart({ data }: Props) {
+export default function CompoundChart({
+  data,
+}: Props) {
   return (
     <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
       <h2 className="text-2xl font-bold text-cyan-400">
@@ -34,16 +36,26 @@ export default function CompoundChart({ data }: Props) {
       </h2>
 
       <div className="mt-8 h-96">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
 
             <XAxis dataKey="anno" />
 
-            <YAxis tickFormatter={(value) => formatEuro(value)} />
+            <YAxis
+              tickFormatter={(value) =>
+                formatEuro(Number(value))
+              }
+            />
 
             <Tooltip
-              formatter={(value: number) => formatEuro(value)}
+              formatter={(value) => [
+                formatEuro(Number(value)),
+                "",
+              ]}
             />
 
             <Legend />

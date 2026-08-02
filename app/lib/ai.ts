@@ -1,7 +1,7 @@
-export interface AIRequest {
-  calculator: string;
-  data: Record<string, unknown>;
-}
+import type {
+  AIRequest,
+  AIResponse,
+} from "../types/ai";
 
 export async function explainCalculation(
   request: AIRequest
@@ -15,10 +15,13 @@ export async function explainCalculation(
   });
 
   if (!response.ok) {
-    throw new Error("Errore durante la richiesta AI.");
+    throw new Error(
+      "Errore durante la richiesta AI."
+    );
   }
 
-  const result = await response.json();
+  const result: AIResponse =
+    await response.json();
 
   return result.message;
 }

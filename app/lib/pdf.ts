@@ -19,9 +19,9 @@ export function exportCompoundPDF(
 
   doc.setFontSize(12);
 
-  doc.text(`Capitale iniziale: € ${capitale}`, 20, 55);
-  doc.text(`Versamento mensile: € ${versamento}`, 20, 65);
-  doc.text(`Tasso annuo: ${tasso}%`, 20, 75);
+  doc.text(`Capitale iniziale: € ${capitale.toFixed(2)}`, 20, 55);
+  doc.text(`Versamento mensile: € ${versamento.toFixed(2)}`, 20, 65);
+  doc.text(`Tasso annuo: ${tasso.toFixed(2)}%`, 20, 75);
   doc.text(`Durata: ${anni} anni`, 20, 85);
 
   doc.line(20, 92, 190, 92);
@@ -31,14 +31,18 @@ export function exportCompoundPDF(
   doc.text(`Totale finale: € ${totale.toFixed(2)}`, 20, 125);
 
   doc.save("smartcalc-interessi-composti.pdf");
-  
 }
+
 export function exportSalaryPDF(
   ral: number,
   mensilita: number,
   nettoMensile: number,
   nettoAnnuo: number,
-  trattenute: number
+  trattenute: number,
+  contributi: number,
+  imponibile: number,
+  irpef: number,
+  addizionali: number
 ) {
   const doc = new jsPDF();
 
@@ -50,14 +54,19 @@ export function exportSalaryPDF(
 
   doc.setFontSize(12);
 
-  doc.text(`RAL: € ${ral}`, 20, 55);
+  doc.text(`RAL: € ${ral.toFixed(2)}`, 20, 55);
   doc.text(`Mensilità: ${mensilita}`, 20, 65);
 
   doc.line(20, 72, 190, 72);
 
   doc.text(`Netto annuo: € ${nettoAnnuo.toFixed(2)}`, 20, 85);
   doc.text(`Netto mensile: € ${nettoMensile.toFixed(2)}`, 20, 95);
-  doc.text(`Trattenute: € ${trattenute.toFixed(2)}`, 20, 105);
+
+  doc.text(`Contributi: € ${contributi.toFixed(2)}`, 20, 110);
+  doc.text(`Imponibile fiscale: € ${imponibile.toFixed(2)}`, 20, 120);
+  doc.text(`IRPEF: € ${irpef.toFixed(2)}`, 20, 130);
+  doc.text(`Addizionali: € ${addizionali.toFixed(2)}`, 20, 140);
+  doc.text(`Totale trattenute: € ${trattenute.toFixed(2)}`, 20, 150);
 
   doc.save("smartcalc-stipendio.pdf");
 }
