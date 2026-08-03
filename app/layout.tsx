@@ -19,24 +19,27 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://smartcalc-ai.com"),
 
+  applicationName: "SmartCalc AI",
+
   title: {
     default: "SmartCalc AI",
     template: "%s | SmartCalc AI",
   },
 
   description:
-    "Calcolatori online con AI per stipendi, mutui, prestiti, IVA, pensione e finanza personale.",
+    "Calcolatori online con AI per stipendi, mutui, prestiti, interessi composti, IVA e finanza personale.",
 
   keywords: [
     "SmartCalc AI",
     "calcolatore stipendio",
+    "stipendio netto",
     "calcolatore mutuo",
     "calcolatore prestito",
+    "interessi composti",
     "calcolatore IVA",
-    "calcolatore pensione",
-    "stipendio netto",
     "finanza personale",
     "AI",
+    "advisor finanziario",
   ],
 
   authors: [
@@ -47,25 +50,46 @@ export const metadata: Metadata = {
 
   creator: "SmartCalc AI",
 
+  publisher: "SmartCalc AI",
+
+  category: "Finance",
+
+  alternates: {
+    canonical: "/",
+  },
+
   openGraph: {
     title: "SmartCalc AI",
+
     description:
-      "Calcolatori intelligenti con AI per la finanza personale.",
-    type: "website",
-    locale: "it_IT",
+      "Calcolatori intelligenti con AI per stipendi, mutui, prestiti, investimenti e finanza personale.",
+
+    url: "https://smartcalc-ai.com",
+
     siteName: "SmartCalc AI",
+
+    locale: "it_IT",
+
+    type: "website",
   },
 
   twitter: {
     card: "summary_large_image",
+
     title: "SmartCalc AI",
+
     description:
-      "Calcolatori intelligenti con AI.",
+      "Calcolatori intelligenti con AI per stipendi, mutui, prestiti e investimenti.",
   },
 
   robots: {
     index: true,
     follow: true,
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
