@@ -1,3 +1,9 @@
+import {
+  saveToStorage,
+  getFromStorage,
+  clearFromStorage,
+} from "./utils";
+
 const STORAGE_KEY = "smartcalc-mortgage";
 
 export interface SavedMortgageCalculation {
@@ -14,29 +20,18 @@ export interface SavedMortgageCalculation {
 
 export function saveMortgageCalculation(
   data: SavedMortgageCalculation
-) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
+): void {
+  saveToStorage(STORAGE_KEY, data);
 }
 
 export function getMortgageCalculation():
   | SavedMortgageCalculation
   | null {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return null;
-  }
+  return getFromStorage<SavedMortgageCalculation>(
+    STORAGE_KEY
+  );
 }
 
-export function clearMortgageCalculation() {
-  localStorage.removeItem(STORAGE_KEY);
+export function clearMortgageCalculation(): void {
+  clearFromStorage(STORAGE_KEY);
 }

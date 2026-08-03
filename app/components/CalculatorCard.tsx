@@ -4,7 +4,6 @@ import { LucideIcon } from "lucide-react";
 import PrimaryButton from "./common/PrimaryButton";
 
 interface CalculatorCardProps {
-  id: string;
   href: string;
   title: string;
   description: string;
@@ -13,7 +12,6 @@ interface CalculatorCardProps {
 }
 
 export default function CalculatorCard({
-  id,
   href,
   title,
   description,

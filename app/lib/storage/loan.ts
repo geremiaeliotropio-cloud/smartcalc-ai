@@ -1,3 +1,9 @@
+import {
+  saveToStorage,
+  getFromStorage,
+  clearFromStorage,
+} from "./utils";
+
 const STORAGE_KEY = "smartcalc-loan";
 
 export interface SavedLoanCalculation {
@@ -14,29 +20,18 @@ export interface SavedLoanCalculation {
 
 export function saveLoanCalculation(
   data: SavedLoanCalculation
-) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
+): void {
+  saveToStorage(STORAGE_KEY, data);
 }
 
 export function getLoanCalculation():
   | SavedLoanCalculation
   | null {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return null;
-  }
+  return getFromStorage<SavedLoanCalculation>(
+    STORAGE_KEY
+  );
 }
 
-export function clearLoanCalculation() {
-  localStorage.removeItem(STORAGE_KEY);
+export function clearLoanCalculation(): void {
+  clearFromStorage(STORAGE_KEY);
 }

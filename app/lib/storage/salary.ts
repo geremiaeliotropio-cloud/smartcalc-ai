@@ -1,5 +1,13 @@
 import type { SalaryCalculation } from "../../types/salary";
 
+import {
+  saveToStorage,
+  getFromStorage,
+  clearFromStorage,
+} from "./utils";
+
+const STORAGE_KEY = "smartcalc-salary";
+
 export interface SavedSalaryCalculation
   extends SalaryCalculation {
   ral: number;
@@ -7,33 +15,20 @@ export interface SavedSalaryCalculation
   createdAt: string;
 }
 
-const STORAGE_KEY = "smartcalc-salary";
-
 export function saveSalaryCalculation(
   data: SavedSalaryCalculation
-) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
+): void {
+  saveToStorage(STORAGE_KEY, data);
 }
 
 export function getSalaryCalculation():
   | SavedSalaryCalculation
   | null {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return null;
-  }
+  return getFromStorage<SavedSalaryCalculation>(
+    STORAGE_KEY
+  );
 }
 
-export function clearSalaryCalculation() {
-  localStorage.removeItem(STORAGE_KEY);
+export function clearSalaryCalculation(): void {
+  clearFromStorage(STORAGE_KEY);
 }

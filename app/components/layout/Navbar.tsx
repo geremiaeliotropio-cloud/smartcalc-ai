@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -7,9 +8,20 @@ export default function Navbar() {
 
         <Link
           href="/"
-          className="text-2xl font-bold text-cyan-400"
+          className="flex items-center gap-3"
         >
-          SmartCalc AI
+          <Image
+            src="/logo.png"
+            alt="SmartCalc AI"
+            width={220}
+            height={55}
+            priority
+            className="hidden h-10 w-auto md:block"
+          />
+
+          <span className="text-2xl font-bold text-cyan-400 md:hidden">
+            SmartCalc AI
+          </span>
         </Link>
 
         <nav className="flex items-center gap-8">
@@ -27,24 +39,28 @@ export default function Navbar() {
           >
             Calcolatori
           </Link>
+
           <Link
-           href="/dashboard"
-           className="transition hover:text-cyan-400"
-           >
-           📊 Dashboard
+            href="/dashboard"
+            className="transition hover:text-cyan-400"
+          >
+            📊 Dashboard
           </Link>
+
           <Link
             href="/ai"
             className="transition hover:text-cyan-400"
           >
             🤖 AI
           </Link>
+
           <Link
             href="/advisor"
             className="transition hover:text-cyan-400"
-        >
-             📊 Advisor
+          >
+            🧠 Advisor
           </Link>
+
         </nav>
 
       </div>

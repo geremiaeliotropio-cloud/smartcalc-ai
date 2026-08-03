@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import DashboardCard from "./DashboardCard";
 
 import {
   getSalaryCalculation,
+  type SavedSalaryCalculation,
 } from "../../lib/storage";
 
 const formatEuro = (value: number) =>
@@ -13,7 +16,20 @@ const formatEuro = (value: number) =>
   }).format(value);
 
 export default function DashboardSalary() {
-  const salary = getSalaryCalculation();
+  const [salary, setSalary] =
+    useState<SavedSalaryCalculation | null>(null);
+
+  useEffect(() => {
+    const loadSalary = () => {
+      const data = getSalaryCalculation();
+
+      setTimeout(() => {
+        setSalary(data);
+      }, 0);
+    };
+
+    loadSalary();
+  }, []);
 
   if (!salary) {
     return (

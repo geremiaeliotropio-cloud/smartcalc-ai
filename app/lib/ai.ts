@@ -15,9 +15,22 @@ export async function explainCalculation(
   });
 
   if (!response.ok) {
-    throw new Error(
-      "Errore durante la richiesta AI."
-    );
+    let message = "Errore durante la richiesta AI.";
+
+    try {
+      const error = await response.json();
+
+      if (
+        error &&
+        typeof error.message === "string"
+      ) {
+        message = error.message;
+      }
+    } catch {
+      // Nessun body JSON disponibile
+    }
+
+    throw new Error(message);
   }
 
   const result: AIResponse =

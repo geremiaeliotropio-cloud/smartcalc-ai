@@ -50,6 +50,7 @@ export default function SalaryForm({
         <PrimaryButton
           onClick={onCalculate}
           className="w-full"
+          disabled={!ral.trim()}
         >
           Calcola Stipendio
         </PrimaryButton>

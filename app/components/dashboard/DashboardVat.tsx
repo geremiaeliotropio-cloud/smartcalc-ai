@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import DashboardCard from "./DashboardCard";
 
 import {
   getVatCalculation,
+  type SavedVatCalculation,
 } from "../../lib/storage";
 
 const formatEuro = (value: number) =>
@@ -13,7 +16,20 @@ const formatEuro = (value: number) =>
   }).format(value);
 
 export default function DashboardVat() {
-  const vat = getVatCalculation();
+  const [vat, setVat] =
+    useState<SavedVatCalculation | null>(null);
+
+  useEffect(() => {
+    const loadVat = () => {
+      const data = getVatCalculation();
+
+      setTimeout(() => {
+        setVat(data);
+      }, 0);
+    };
+
+    loadVat();
+  }, []);
 
   if (!vat) {
     return (

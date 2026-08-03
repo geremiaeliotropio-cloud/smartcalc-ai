@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 import ChatHistory from "../components/ai/ChatHistory";
-
-import type { ChatMessage } from "../types/ai";
 import ChatInput from "../components/ai/ChatInput";
 import TypingIndicator from "../components/ai/TypingIndicator";
+
+import type { ChatMessage } from "../types/ai";
+
+const STORAGE_KEY = "smartcalc-chat";
 
 const initialMessage: ChatMessage = {
   role: "assistant",
@@ -15,53 +17,58 @@ const initialMessage: ChatMessage = {
 };
 
 export default function AIPage() {
-  const [messages, setMessages] =
-useState<ChatMessage[]>([
-    initialMessage,
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    if (typeof window === "undefined") {
+      return [initialMessage];
+    }
+
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      return saved
+        ? (JSON.parse(saved) as ChatMessage[])
+        : [initialMessage];
+    } catch {
+      return [initialMessage];
+    }
+  });
 
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("smartcalc-chat");
-
-    if (saved) {
-      try {
-        setMessages(JSON.parse(saved));
-      } catch {
-        console.error("Errore nel caricamento della chat.");
-      }
-    }
-  }, []);
+  const firstRender = useRef(true);
 
   useEffect(() => {
     localStorage.setItem(
-      "smartcalc-chat",
+      STORAGE_KEY,
       JSON.stringify(messages)
     );
   }, [messages]);
 
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages, loading]);
 
   async function sendMessage() {
-    if (!question.trim() || loading) {
+    const text = question.trim();
+
+    if (!text || loading) {
       return;
     }
-
-    const currentQuestion = question.trim();
 
     const updatedMessages: ChatMessage[] = [
       ...messages,
       {
         role: "user",
-        content: currentQuestion,
+        content: text,
       },
     ];
 
@@ -70,23 +77,13 @@ useState<ChatMessage[]>([
     setLoading(true);
 
     try {
-      const apiMessages = updatedMessages.map((message) => ({
-        role: message.role,
-        content: [
-          {
-            type: "input_text",
-            text: message.content,
-          },
-        ],
-      }));
-
       const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: apiMessages,
+          messages: updatedMessages,
         }),
       });
 
@@ -96,21 +93,22 @@ useState<ChatMessage[]>([
         throw new Error(data.message);
       }
 
-      setMessages((prev) => [
-        ...prev,
+      setMessages([
+        ...updatedMessages,
         {
           role: "assistant",
           content: data.message,
         },
       ]);
-    } catch (error: any) {
-      setMessages((prev) => [
-        ...prev,
+    } catch (error) {
+      setMessages([
+        ...updatedMessages,
         {
           role: "assistant",
           content:
-            error.message ??
-            "❌ Si è verificato un errore durante la richiesta.",
+            error instanceof Error
+              ? error.message
+              : "❌ Si è verificato un errore durante la richiesta.",
         },
       ]);
     } finally {
@@ -118,12 +116,8 @@ useState<ChatMessage[]>([
     }
   }
 
-  function handleExample(example: string) {
-    setQuestion(example);
-  }
-
   function clearConversation() {
-    localStorage.removeItem("smartcalc-chat");
+    localStorage.removeItem(STORAGE_KEY);
     setMessages([initialMessage]);
   }
 
@@ -135,8 +129,9 @@ useState<ChatMessage[]>([
         </h1>
 
         <p className="mt-4 text-slate-400">
-          Il tuo assistente intelligente per stipendi,
-          mutui, prestiti, pensioni e finanza personale.
+          Il tuo assistente intelligente per
+          stipendi, mutui, prestiti, pensioni,
+          IVA e finanza personale.
         </p>
 
         <div className="mt-6 flex justify-end">
@@ -189,7 +184,7 @@ useState<ChatMessage[]>([
             ].map((example) => (
               <button
                 key={example}
-                onClick={() => handleExample(example)}
+                onClick={() => setQuestion(example)}
                 className="rounded-full border border-slate-700 px-4 py-2 text-sm transition hover:border-cyan-400 hover:text-cyan-400"
               >
                 {example}

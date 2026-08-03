@@ -9,23 +9,27 @@ export function generateSalaryAdvice(
 ): SalaryAdvice[] {
   const advice: SalaryAdvice[] = [];
 
+  if (
+    !Number.isFinite(ral) ||
+    !Number.isFinite(nettoMensile) ||
+    ral <= 0
+  ) {
+    return advice;
+  }
+
   if (ral < 28000) {
     advice.push({
       title: "Possibili agevolazioni",
       message:
         "Con una RAL inferiore a 28.000 € potresti beneficiare di detrazioni o agevolazioni fiscali. Verifica la tua situazione specifica.",
     });
-  }
-
-  if (ral >= 28000 && ral < 50000) {
+  } else if (ral < 50000) {
     advice.push({
       title: "Aumento di stipendio",
       message:
         "Un aumento della RAL non si trasforma interamente in netto perché una parte sarà assorbita da contributi e imposte.",
     });
-  }
-
-  if (ral >= 50000) {
+  } else {
     advice.push({
       title: "Benefit aziendali",
       message:

@@ -32,7 +32,7 @@ export default function CompoundChart({
   return (
     <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
       <h2 className="text-2xl font-bold text-cyan-400">
-        Crescita dell'investimento
+        Crescita dell&apos;investimento
       </h2>
 
       <div className="mt-8 h-96">

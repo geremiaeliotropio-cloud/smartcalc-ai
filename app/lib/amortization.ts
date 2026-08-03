@@ -10,6 +10,17 @@ export function generateAmortization(
   tassoAnnuo: number,
   anni: number
 ): Payment[] {
+  if (
+    !Number.isFinite(importo) ||
+    !Number.isFinite(tassoAnnuo) ||
+    !Number.isFinite(anni) ||
+    importo <= 0 ||
+    tassoAnnuo <= 0 ||
+    anni <= 0
+  ) {
+    return [];
+  }
+
   const tassoMensile = tassoAnnuo / 100 / 12;
   const numeroRate = anni * 12;
 
@@ -31,9 +42,11 @@ export function generateAmortization(
 
     piano.push({
       rata: i,
-      capitale,
-      interessi,
-      residuo: Math.max(0, residuo),
+      capitale: Number(capitale.toFixed(2)),
+      interessi: Number(interessi.toFixed(2)),
+      residuo: Number(
+        Math.max(0, residuo).toFixed(2)
+      ),
     });
   }
 

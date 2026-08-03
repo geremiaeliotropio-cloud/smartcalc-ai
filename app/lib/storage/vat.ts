@@ -1,3 +1,9 @@
+import {
+  saveToStorage,
+  getFromStorage,
+  clearFromStorage,
+} from "./utils";
+
 const STORAGE_KEY = "smartcalc-vat";
 
 export interface SavedVatCalculation {
@@ -12,29 +18,18 @@ export interface SavedVatCalculation {
 
 export function saveVatCalculation(
   data: SavedVatCalculation
-) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
+): void {
+  saveToStorage(STORAGE_KEY, data);
 }
 
 export function getVatCalculation():
   | SavedVatCalculation
   | null {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return null;
-  }
+  return getFromStorage<SavedVatCalculation>(
+    STORAGE_KEY
+  );
 }
 
-export function clearVatCalculation() {
-  localStorage.removeItem(STORAGE_KEY);
+export function clearVatCalculation(): void {
+  clearFromStorage(STORAGE_KEY);
 }

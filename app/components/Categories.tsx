@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Briefcase,
   HeartPulse,
@@ -11,26 +12,31 @@ const categories = [
     icon: Landmark,
     title: "Finanza",
     description: "Mutui, prestiti e investimenti.",
+    href: "/calculators",
   },
   {
     icon: Briefcase,
     title: "Lavoro",
     description: "Stipendio netto, RAL e tasse.",
+    href: "/calculators/stipendio",
   },
   {
     icon: Receipt,
     title: "Fisco",
     description: "IVA e calcoli fiscali.",
+    href: "/calculators/iva",
   },
   {
     icon: PiggyBank,
     title: "Risparmio",
     description: "Interessi composti e crescita del capitale.",
+    href: "/calculators/interessi-composti",
   },
   {
     icon: HeartPulse,
     title: "Salute",
     description: "BMI e altri strumenti dedicati.",
+    href: "/calculators",
   },
 ];
 
@@ -45,6 +51,10 @@ export default function Categories() {
         <h2 className="mt-2 text-4xl font-bold">
           Tutti i calcolatori organizzati
         </h2>
+
+        <p className="mt-4 text-slate-400">
+          Clicca su una categoria per iniziare.
+        </p>
       </div>
 
       <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-5">
@@ -52,22 +62,27 @@ export default function Categories() {
           const Icon = category.icon;
 
           return (
-            <div
+            <Link
               key={category.title}
-              className="rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center transition hover:-translate-y-2 hover:border-cyan-500"
+              href={category.href}
+              className="group rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center transition duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:bg-slate-800"
             >
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 transition group-hover:scale-110">
                 <Icon size={30} />
               </div>
 
-              <h3 className="text-xl font-bold">
+              <h3 className="text-xl font-bold transition group-hover:text-cyan-400">
                 {category.title}
               </h3>
 
               <p className="mt-3 text-sm text-slate-400">
                 {category.description}
               </p>
-            </div>
+
+              <div className="mt-6 font-semibold text-cyan-400">
+                Apri →
+              </div>
+            </Link>
           );
         })}
       </div>

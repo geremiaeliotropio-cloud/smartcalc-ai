@@ -9,6 +9,8 @@ export default function PrestitoPage() {
   const [tasso, setTasso] = useState("");
   const [anni, setAnni] = useState("");
 
+  const [error, setError] = useState("");
+
   const [rata, setRata] = useState<number | null>(null);
   const [interessi, setInteressi] = useState<number | null>(null);
   const [totale, setTotale] = useState<number | null>(null);
@@ -20,37 +22,63 @@ export default function PrestitoPage() {
     }).format(value);
 
   function calcolaPrestito() {
-    const P = Number(importo);
-    const r = Number(tasso) / 100 / 12;
-    const n = Number(anni) * 12;
+    setError("");
 
-    if (!P || !r || !n) {
+    const importoNumber = Number(importo);
+    const tassoNumber = Number(tasso);
+    const anniNumber = Number(anni);
+
+    if (
+      Number.isNaN(importoNumber) ||
+      Number.isNaN(tassoNumber) ||
+      Number.isNaN(anniNumber) ||
+      importoNumber <= 0 ||
+      tassoNumber <= 0 ||
+      anniNumber <= 0
+    ) {
+      setRata(null);
+      setInteressi(null);
+      setTotale(null);
+
+      setError(
+        "Inserisci importo, tasso e durata validi."
+      );
+
       return;
     }
 
+    const r = tassoNumber / 100 / 12;
+    const n = anniNumber * 12;
+
     const rataMensile =
-      (P * r * Math.pow(1 + r, n)) /
+      (importoNumber *
+        r *
+        Math.pow(1 + r, n)) /
       (Math.pow(1 + r, n) - 1);
 
     const totalePagato = rataMensile * n;
-    const interessiTotali = totalePagato - P;
+    const interessiTotali =
+      totalePagato - importoNumber;
 
     setRata(rataMensile);
-    setTotale(totalePagato);
     setInteressi(interessiTotali);
+    setTotale(totalePagato);
 
     saveLoanCalculation({
-      importo: P,
-      durata: Number(anni),
-      tasso: Number(tasso),
-
+      importo: importoNumber,
+      durata: anniNumber,
+      tasso: tassoNumber,
       rata: rataMensile,
       interessi: interessiTotali,
       totale: totalePagato,
-
       createdAt: new Date().toISOString(),
     });
   }
+
+  const hasResults =
+    rata !== null &&
+    interessi !== null &&
+    totale !== null;
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -63,7 +91,8 @@ export default function PrestitoPage() {
         </h1>
 
         <p className="mt-4 text-slate-400">
-          Calcola la rata mensile del tuo prestito.
+          Calcola la rata mensile del tuo
+          prestito.
         </p>
 
         <div className="mt-10 space-y-5">
@@ -74,7 +103,7 @@ export default function PrestitoPage() {
             onChange={(e) =>
               setImporto(e.target.value)
             }
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
+            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none transition focus:border-cyan-400"
           />
 
           <input
@@ -84,7 +113,7 @@ export default function PrestitoPage() {
             onChange={(e) =>
               setTasso(e.target.value)
             }
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
+            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none transition focus:border-cyan-400"
           />
 
           <input
@@ -94,8 +123,14 @@ export default function PrestitoPage() {
             onChange={(e) =>
               setAnni(e.target.value)
             }
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
+            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none transition focus:border-cyan-400"
           />
+
+          {error && (
+            <div className="rounded-xl border border-red-500 bg-red-500/10 p-4 text-red-300">
+              {error}
+            </div>
+          )}
 
           <button
             onClick={calcolaPrestito}
@@ -105,7 +140,7 @@ export default function PrestitoPage() {
           </button>
         </div>
 
-        {rata !== null && (
+        {hasResults && (
           <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
             <h2 className="text-3xl font-bold text-cyan-400">
               {formatEuro(rata)}
@@ -122,7 +157,7 @@ export default function PrestitoPage() {
                 </p>
 
                 <h3 className="mt-2 text-2xl font-bold">
-                  {formatEuro(interessi!)}
+                  {formatEuro(interessi)}
                 </h3>
               </div>
 
@@ -132,7 +167,7 @@ export default function PrestitoPage() {
                 </p>
 
                 <h3 className="mt-2 text-2xl font-bold">
-                  {formatEuro(totale!)}
+                  {formatEuro(totale)}
                 </h3>
               </div>
             </div>

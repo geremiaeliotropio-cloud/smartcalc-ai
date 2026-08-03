@@ -1,7 +1,7 @@
 import {
   Brain,
   ChartColumn,
-  FileText,
+  ShieldCheck,
   Zap,
 } from "lucide-react";
 
@@ -16,19 +16,19 @@ const features = [
     icon: ChartColumn,
     title: "Grafici Interattivi",
     description:
-      "Visualizza l'andamento dei tuoi calcoli con grafici chiari e intuitivi.",
+      "Visualizza i risultati con grafici chiari e intuitivi per comprendere meglio ogni simulazione.",
   },
   {
-    icon: FileText,
-    title: "Esporta in PDF",
+    icon: ShieldCheck,
+    title: "Risultati Affidabili",
     description:
-      "Scarica i risultati in PDF professionali pronti da condividere o stampare.",
+      "Calcoli progettati per offrire simulazioni rapide, precise e facili da interpretare.",
   },
   {
     icon: Zap,
     title: "Veloce e Gratuito",
     description:
-      "Tutti i calcolatori sono gratuiti e disponibili direttamente dal browser.",
+      "Utilizza tutti i calcolatori direttamente dal browser, senza installazioni.",
   },
 ];
 

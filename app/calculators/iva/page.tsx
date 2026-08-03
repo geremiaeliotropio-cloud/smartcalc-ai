@@ -2,11 +2,17 @@
 
 import { useState } from "react";
 
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
+import PrimaryButton from "../../components/common/PrimaryButton";
+
 import { saveVatCalculation } from "../../lib/storage";
 
 export default function IvaPage() {
   const [importo, setImporto] = useState("");
   const [aliquota, setAliquota] = useState("22");
+
+  const [error, setError] = useState("");
 
   const [iva, setIva] = useState<number | null>(null);
   const [totale, setTotale] = useState<number | null>(null);
@@ -18,10 +24,24 @@ export default function IvaPage() {
     }).format(value);
 
   function calcolaIVA() {
+    setError("");
+
     const imponibile = Number(importo);
     const perc = Number(aliquota);
 
-    if (!imponibile || !perc) {
+    if (
+      Number.isNaN(imponibile) ||
+      Number.isNaN(perc) ||
+      imponibile <= 0 ||
+      perc <= 0
+    ) {
+      setIva(null);
+      setTotale(null);
+
+      setError(
+        "Inserisci un importo e un'aliquota validi."
+      );
+
       return;
     }
 
@@ -34,13 +54,15 @@ export default function IvaPage() {
     saveVatCalculation({
       imponibile,
       aliquota: perc,
-
       iva: valoreIVA,
       totale: totaleConIVA,
-
       createdAt: new Date().toISOString(),
     });
   }
+
+  const hasResults =
+    iva !== null &&
+    totale !== null;
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -56,75 +78,78 @@ export default function IvaPage() {
           Calcola rapidamente IVA e totale.
         </p>
 
-        <div className="mt-10 space-y-5">
-          <input
+        <div className="mt-10 space-y-6">
+          <Input
+            label="Importo (€)"
             type="number"
-            placeholder="Importo (€)"
             value={importo}
-            onChange={(e) =>
-              setImporto(e.target.value)
-            }
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
+            onChange={setImporto}
+            placeholder="Es. 1000"
           />
 
-          <select
+          <Select
+            label="Aliquota IVA"
             value={aliquota}
-            onChange={(e) =>
-              setAliquota(e.target.value)
-            }
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4"
-          >
-            <option value="4">
-              IVA 4%
-            </option>
+            onChange={setAliquota}
+            options={[
+              {
+                value: "4",
+                label: "IVA 4%",
+              },
+              {
+                value: "5",
+                label: "IVA 5%",
+              },
+              {
+                value: "10",
+                label: "IVA 10%",
+              },
+              {
+                value: "22",
+                label: "IVA 22%",
+              },
+            ]}
+          />
 
-            <option value="5">
-              IVA 5%
-            </option>
-
-            <option value="10">
-              IVA 10%
-            </option>
-
-            <option value="22">
-              IVA 22%
-            </option>
-          </select>
-
-          <button
-            onClick={calcolaIVA}
-            className="w-full rounded-xl bg-cyan-500 py-4 font-semibold text-slate-950 transition hover:bg-cyan-400"
-          >
-            Calcola IVA
-          </button>
-        </div>
-
-        {iva !== null &&
-          totale !== null && (
-            <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-xl bg-slate-800 p-5">
-                  <p className="text-slate-400">
-                    IVA
-                  </p>
-
-                  <h3 className="mt-2 text-2xl font-bold text-cyan-400">
-                    {formatEuro(iva)}
-                  </h3>
-                </div>
-
-                <div className="rounded-xl bg-slate-800 p-5">
-                  <p className="text-slate-400">
-                    Totale
-                  </p>
-
-                  <h3 className="mt-2 text-2xl font-bold">
-                    {formatEuro(totale)}
-                  </h3>
-                </div>
-              </div>
+          {error && (
+            <div className="rounded-xl border border-red-500 bg-red-500/10 p-4 text-red-300">
+              {error}
             </div>
           )}
+
+          <PrimaryButton
+            onClick={calcolaIVA}
+            className="w-full"
+          >
+            Calcola IVA
+          </PrimaryButton>
+        </div>
+
+        {hasResults && (
+          <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-xl bg-slate-800 p-5">
+                <p className="text-slate-400">
+                  IVA
+                </p>
+
+                <h3 className="mt-2 text-2xl font-bold text-cyan-400">
+                  {formatEuro(iva)}
+                </h3>
+              </div>
+
+              <div className="rounded-xl bg-slate-800 p-5">
+                <p className="text-slate-400">
+                  Totale
+                </p>
+
+                <h3 className="mt-2 text-2xl font-bold">
+                  {formatEuro(totale)}
+                </h3>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </main>
   );

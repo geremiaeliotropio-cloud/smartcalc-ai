@@ -1,39 +1,50 @@
 import { NextResponse } from "next/server";
-import { openai } from "../../../lib/openai";
-import { buildChatPrompt } from "../../../lib/prompts";
+
+import { askOpenAI } from "../../../lib/openaiRequest";
+import { buildSystemPrompt } from "../../../lib/prompts";
+
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
 
 export async function POST(req: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
+    const body = await req.json();
+
+    if (!Array.isArray(body.messages)) {
       return NextResponse.json(
         {
-          message: "OPENAI_API_KEY non trovata.",
+          message: "Cronologia chat non valida.",
         },
         {
-          status: 500,
+          status: 400,
         }
       );
     }
 
-    const { question } = await req.json();
+    const messages: ChatMessage[] = body.messages;
 
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: buildChatPrompt(question),
-    });
+    const response = await askOpenAI([
+      {
+        role: "system",
+        content: buildSystemPrompt(),
+      },
+      ...messages,
+    ]);
 
     return NextResponse.json({
-      message: response.output_text,
+      message: response,
     });
-  } catch (error: any) {
-    console.error("OPENAI ERROR:");
+  } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       {
         message:
-          error?.message ??
-          "Errore durante la richiesta AI.",
+          error instanceof Error
+            ? error.message
+            : "Errore durante la richiesta AI.",
       },
       {
         status: 500,

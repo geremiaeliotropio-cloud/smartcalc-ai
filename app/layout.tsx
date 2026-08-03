@@ -5,15 +5,18 @@ import "./globals.css";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+import ScrollToTop from "./components/layout/ScrollToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -101,9 +104,12 @@ export default function RootLayout({
   return (
     <html
       lang="it"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-slate-950 text-white antialiased">
+        <ScrollToTop />
+
         <Navbar />
 
         <main className="flex-1">

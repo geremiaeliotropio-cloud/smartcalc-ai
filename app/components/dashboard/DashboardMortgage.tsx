@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import DashboardCard from "./DashboardCard";
 
 import {
   getMortgageCalculation,
+  type SavedMortgageCalculation,
 } from "../../lib/storage";
 
 const formatEuro = (value: number) =>
@@ -13,7 +16,20 @@ const formatEuro = (value: number) =>
   }).format(value);
 
 export default function DashboardMortgage() {
-  const mortgage = getMortgageCalculation();
+  const [mortgage, setMortgage] =
+    useState<SavedMortgageCalculation | null>(null);
+
+  useEffect(() => {
+    const loadMortgage = () => {
+      const data = getMortgageCalculation();
+
+      setTimeout(() => {
+        setMortgage(data);
+      }, 0);
+    };
+
+    loadMortgage();
+  }, []);
 
   if (!mortgage) {
     return (

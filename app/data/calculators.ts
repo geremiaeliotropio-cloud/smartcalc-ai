@@ -1,6 +1,5 @@
 import {
   Calculator,
-  HeartPulse,
   Landmark,
   PiggyBank,
   Receipt,
@@ -37,14 +36,6 @@ export const calculators: CalculatorItem[] = [
     icon: Wallet,
   },
   {
-    id: "bmi",
-    href: "/calculators/bmi",
-    title: "Calcolatore BMI",
-    category: "Salute",
-    description: "Calcola il tuo indice di massa corporea.",
-    icon: HeartPulse,
-  },
-  {
     id: "iva",
     href: "/calculators/iva",
     title: "Calcolatore IVA",
@@ -65,15 +56,17 @@ export const calculators: CalculatorItem[] = [
     href: "/calculators/confronto-stipendio",
     title: "Confronto Stipendi",
     category: "Lavoro",
-    description: "Confronta due RAL e scopri quanto cambia il tuo stipendio netto.",
+    description:
+      "Confronta due RAL e scopri quanto cambia il tuo stipendio netto.",
     icon: Scale,
   },
   {
-    id: "pensione",
-    href: "/calculators/pensione",
-    title: "Calcolatore Pensione",
-    category: "Previdenza",
-    description: "Stima la pensione futura.",
+    id: "interessi-composti",
+    href: "/calculators/interessi-composti",
+    title: "Interessi Composti",
+    category: "Investimenti",
+    description:
+      "Simula la crescita del capitale con interessi composti.",
     icon: PiggyBank,
   },
 ];

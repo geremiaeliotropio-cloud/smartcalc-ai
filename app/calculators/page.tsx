@@ -1,25 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-import { calculators } from "../data/calculators";
 import CalculatorGrid from "../components/CalculatorGrid";
+import { calculators } from "../data/calculators";
 
 export default function CalculatorsPage() {
   const [search, setSearch] = useState("");
 
-  const filteredCalculators = calculators.filter(
-    (calculator) =>
-      calculator.title
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      calculator.description
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      calculator.category
-        .toLowerCase()
-        .includes(search.toLowerCase())
-  );
+  const filteredCalculators = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) {
+      return calculators;
+    }
+
+    return calculators.filter(
+      (calculator) =>
+        calculator.title.toLowerCase().includes(query) ||
+        calculator.description.toLowerCase().includes(query) ||
+        calculator.category.toLowerCase().includes(query)
+    );
+  }, [search]);
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -41,12 +43,24 @@ export default function CalculatorsPage() {
             placeholder="🔍 Cerca un calcolatore..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none focus:border-cyan-400"
+            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-4 outline-none transition focus:border-cyan-400"
           />
         </div>
 
         <div className="mt-12">
-          <CalculatorGrid calculators={filteredCalculators} />
+          {filteredCalculators.length > 0 ? (
+            <CalculatorGrid calculators={filteredCalculators} />
+          ) : (
+            <div className="rounded-3xl border border-slate-800 bg-slate-900 p-10 text-center">
+              <h2 className="text-2xl font-bold">
+                Nessun calcolatore trovato
+              </h2>
+
+              <p className="mt-3 text-slate-400">
+                Prova a cercare con un termine diverso.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </main>

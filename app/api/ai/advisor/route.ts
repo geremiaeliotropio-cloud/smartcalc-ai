@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { openai } from "../../../lib/openai";
-import { buildAdvisorPrompt } from "../../../lib/prompts";
+
+import { openai } from "@/app/lib/openai";
+import { buildAdvisorPrompt } from "@/app/lib/prompts";
 
 export async function POST(req: Request) {
   try {

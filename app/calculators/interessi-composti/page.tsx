@@ -12,37 +12,70 @@ import { exportCompoundPDF } from "../../lib/pdf";
 import { generateCompoundData } from "../../lib/compound";
 import { saveCompoundCalculation } from "../../lib/storage";
 
+interface CompoundChartData {
+  anno: number;
+  investito: number;
+  valore: number;
+}
+
 export default function CompoundInterestPage() {
   const [capitale, setCapitale] = useState("");
   const [versamento, setVersamento] = useState("");
   const [tasso, setTasso] = useState("");
   const [anni, setAnni] = useState("");
 
+  const [error, setError] = useState("");
+
   const [totale, setTotale] = useState<number | null>(null);
   const [investito, setInvestito] = useState<number | null>(null);
   const [interessi, setInteressi] = useState<number | null>(null);
 
-  const [grafico, setGrafico] = useState<any[]>([]);
+  const [grafico, setGrafico] = useState<
+    CompoundChartData[]
+  >([]);
 
   function calcola() {
-    const P = Number(capitale);
-    const M = Number(versamento);
-    const r = Number(tasso) / 100 / 12;
-    const n = Number(anni) * 12;
+    setError("");
 
-    if (P <= 0 || n <= 0) {
-      alert("Inserisci un capitale e una durata validi.");
+    const capitaleNumber = Number(capitale);
+    const versamentoNumber = Number(versamento);
+    const tassoNumber = Number(tasso);
+    const anniNumber = Number(anni);
+
+    if (
+      Number.isNaN(capitaleNumber) ||
+      Number.isNaN(versamentoNumber) ||
+      Number.isNaN(tassoNumber) ||
+      Number.isNaN(anniNumber) ||
+      capitaleNumber <= 0 ||
+      anniNumber <= 0
+    ) {
+      setTotale(null);
+      setInvestito(null);
+      setInteressi(null);
+      setGrafico([]);
+
+      setError(
+        "Inserisci un capitale e una durata validi."
+      );
+
       return;
     }
 
-    let saldo = P;
+    const r = tassoNumber / 100 / 12;
+    const n = anniNumber * 12;
+
+    let saldo = capitaleNumber;
 
     for (let i = 0; i < n; i++) {
-      saldo = saldo * (1 + r) + M;
+      saldo = saldo * (1 + r) + versamentoNumber;
     }
 
-    const investitoTotale = P + M * n;
-    const interessiTotali = saldo - investitoTotale;
+    const investitoTotale =
+      capitaleNumber + versamentoNumber * n;
+
+    const interessiTotali =
+      saldo - investitoTotale;
 
     setTotale(saldo);
     setInvestito(investitoTotale);
@@ -50,18 +83,18 @@ export default function CompoundInterestPage() {
 
     setGrafico(
       generateCompoundData(
-        P,
-        M,
-        Number(tasso),
-        Number(anni)
+        capitaleNumber,
+        versamentoNumber,
+        tassoNumber,
+        anniNumber
       )
     );
 
     saveCompoundCalculation({
-      capitale: P,
-      versamento: M,
-      tasso: Number(tasso),
-      anni: Number(anni),
+      capitale: capitaleNumber,
+      versamento: versamentoNumber,
+      tasso: tassoNumber,
+      anni: anniNumber,
 
       investito: investitoTotale,
       interessi: interessiTotali,
@@ -77,9 +110,12 @@ export default function CompoundInterestPage() {
     setTasso("");
     setAnni("");
 
+    setError("");
+
     setTotale(null);
     setInvestito(null);
     setInteressi(null);
+
     setGrafico([]);
   }
 
@@ -102,6 +138,11 @@ export default function CompoundInterestPage() {
       totale
     );
   }
+
+  const hasResults =
+    totale !== null &&
+    investito !== null &&
+    interessi !== null;
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -131,27 +172,31 @@ export default function CompoundInterestPage() {
           onReset={reset}
         />
 
-        {totale !== null &&
-          investito !== null &&
-          interessi !== null && (
-            <>
-              <CompoundResults
-                investito={investito}
-                interessi={interessi}
-                totale={totale}
-              />
+        {error && (
+          <div className="mt-8 rounded-2xl border border-red-500 bg-red-500/10 p-4 text-red-300">
+            {error}
+          </div>
+        )}
 
-              <CompoundChart
-                data={grafico}
-              />
+        {hasResults && (
+          <>
+            <CompoundResults
+              investito={investito}
+              interessi={interessi}
+              totale={totale}
+            />
 
-              <div className="mt-8">
-                <PdfButton
-                  onClick={scaricaPDF}
-                />
-              </div>
-            </>
-          )}
+            <CompoundChart
+              data={grafico}
+            />
+
+            <div className="mt-8 flex justify-center">
+              <PdfButton
+                onClick={scaricaPDF}
+              />
+            </div>
+          </>
+        )}
       </section>
     </main>
   );

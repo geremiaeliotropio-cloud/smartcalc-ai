@@ -1,20 +1,20 @@
 import {
   Calculator,
-  FileText,
+  Brain,
   ChartColumn,
-  Globe,
+  ShieldCheck,
 } from "lucide-react";
 
 const stats = [
   {
     icon: Calculator,
-    value: "5+",
-    label: "Calcolatori",
+    value: "6",
+    label: "Calcolatori disponibili",
   },
   {
-    icon: FileText,
-    value: "PDF",
-    label: "Esportazione",
+    icon: Brain,
+    value: "AI",
+    label: "Assistente intelligente",
   },
   {
     icon: ChartColumn,
@@ -22,9 +22,9 @@ const stats = [
     label: "Interattivi",
   },
   {
-    icon: Globe,
-    value: "Multi",
-    label: "Lingua (presto)",
+    icon: ShieldCheck,
+    value: "100%",
+    label: "Online e gratuito",
   },
 ];
 

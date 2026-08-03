@@ -1,39 +1,47 @@
 import { NextResponse } from "next/server";
-import { openai } from "../../lib/openai";
+
+import { askOpenAI } from "../../lib/openaiRequest";
 import { buildSalaryPrompt } from "../../lib/prompts";
 
 export async function POST(req: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
+    const body = await req.json();
+
+    if (!body?.data) {
       return NextResponse.json(
         {
-          message: "OPENAI_API_KEY non trovata.",
+          message: "Dati mancanti.",
         },
         {
-          status: 500,
+          status: 400,
         }
       );
     }
 
-    const body = await req.json();
-
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: buildSalaryPrompt(body.data),
-    });
+    const message = await askOpenAI([
+      {
+        role: "system",
+        content:
+          "Sei SmartCalc AI, consulente esperto di finanza personale, stipendi, mutui, prestiti e fiscalità italiana.",
+      },
+      {
+        role: "user",
+        content: buildSalaryPrompt(body.data),
+      },
+    ]);
 
     return NextResponse.json({
-      message: response.output_text,
+      message,
     });
-  } catch (error: any) {
-    console.error("OPENAI ERROR:");
+  } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       {
         message:
-          error?.message ??
-          "Errore durante la richiesta OpenAI.",
+          error instanceof Error
+            ? error.message
+            : "Errore durante la richiesta AI.",
       },
       {
         status: 500,

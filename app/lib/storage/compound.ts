@@ -1,3 +1,9 @@
+import {
+  saveToStorage,
+  getFromStorage,
+  clearFromStorage,
+} from "./utils";
+
 const STORAGE_KEY = "smartcalc-compound";
 
 export interface SavedCompoundCalculation {
@@ -15,29 +21,18 @@ export interface SavedCompoundCalculation {
 
 export function saveCompoundCalculation(
   data: SavedCompoundCalculation
-) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
+): void {
+  saveToStorage(STORAGE_KEY, data);
 }
 
 export function getCompoundCalculation():
   | SavedCompoundCalculation
   | null {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return null;
-  }
+  return getFromStorage<SavedCompoundCalculation>(
+    STORAGE_KEY
+  );
 }
 
-export function clearCompoundCalculation() {
-  localStorage.removeItem(STORAGE_KEY);
+export function clearCompoundCalculation(): void {
+  clearFromStorage(STORAGE_KEY);
 }
