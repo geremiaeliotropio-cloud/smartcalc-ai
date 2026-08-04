@@ -54,7 +54,9 @@ export const metadata: Metadata = {
   creator: "SmartCalc AI",
 
   publisher: "SmartCalc AI",
-
+verification: {
+  google: "qUiFSJksIIaUdJZ2sR1I7T4Oc90TvmqqaCowi-mV6Tg",
+},
   category: "Finance",
 
   alternates: {
