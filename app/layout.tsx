@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 
 import "./globals.css";
 
@@ -54,9 +55,7 @@ export const metadata: Metadata = {
   creator: "SmartCalc AI",
 
   publisher: "SmartCalc AI",
-verification: {
-  google: "qUiFSJksIIaUdJZ2sR1I7T4Oc90TvmqqaCowi-mV6Tg",
-},
+
   category: "Finance",
 
   alternates: {
@@ -92,6 +91,10 @@ verification: {
     follow: true,
   },
 
+  verification: {
+    google: "qUiFSJksIIaUdJZ2sR1I7T4Oc90TvmqqaCowi-mV6Tg",
+  },
+
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -110,6 +113,22 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-slate-950 text-white antialiased">
+
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-T1KX33GRMB"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-T1KX33GRMB');
+          `}
+        </Script>
+
         <ScrollToTop />
 
         <Navbar />
