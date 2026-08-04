@@ -9,31 +9,16 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   const links = [
-    {
-      href: "/",
-      label: "Home",
-    },
-    {
-      href: "/calculators",
-      label: "Calcolatori",
-    },
-    {
-      href: "/dashboard",
-      label: "📊 Dashboard",
-    },
-    {
-      href: "/ai",
-      label: "🤖 AI",
-    },
-    {
-      href: "/advisor",
-      label: "🧠 Advisor",
-    },
+    { href: "/", label: "🏠 Home" },
+    { href: "/calculators", label: "🧮 Calcolatori" },
+    { href: "/dashboard", label: "📊 Dashboard" },
+    { href: "/ai", label: "🤖 AI" },
+    { href: "/advisor", label: "🧠 Advisor" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+    <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:h-20 md:px-6">
 
         <Link
           href="/"
@@ -44,32 +29,34 @@ export default function Navbar() {
             alt="SmartCalc AI"
             width={42}
             height={42}
-            className="h-10 w-10"
+            className="h-9 w-9 md:h-11 md:w-11"
             priority
           />
 
-          <span className="text-2xl font-extrabold text-cyan-400">
+          <span className="text-lg font-extrabold text-cyan-400 sm:text-xl md:text-2xl">
             SmartCalc AI
           </span>
         </Link>
 
+        {/* Desktop */}
         <nav className="hidden items-center gap-8 text-slate-200 md:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="transition hover:text-cyan-400"
+              className="transition-colors duration-300 hover:text-cyan-400"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
+        {/* Mobile */}
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="rounded-lg p-2 text-white transition hover:bg-slate-800 md:hidden"
           aria-label="Apri menu"
+          className="rounded-xl p-3 transition hover:bg-slate-800 md:hidden"
         >
           {open ? <X size={30} /> : <Menu size={30} />}
         </button>
@@ -78,18 +65,22 @@ export default function Navbar() {
 
       {open && (
         <nav className="border-t border-slate-800 bg-slate-950 md:hidden">
-          <div className="flex flex-col p-4">
+
+          <div className="space-y-2 p-4">
+
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-4 py-3 text-white transition hover:bg-slate-900 hover:text-cyan-400"
+                className="block rounded-2xl bg-slate-900 px-5 py-4 text-base font-medium transition-all duration-300 hover:bg-slate-800 hover:text-cyan-400"
               >
                 {link.label}
               </Link>
             ))}
+
           </div>
+
         </nav>
       )}
     </header>
