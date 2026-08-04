@@ -8,21 +8,15 @@ export interface ChatMessage {
 export async function askOpenAI(
   messages: ChatMessage[]
 ): Promise<string> {
-  const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
+  const response =
+    await openai.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages,
+    });
 
-    input: messages.map((message) => ({
-      role: message.role,
-      content: [
-        {
-          type: "input_text",
-          text: message.content,
-        },
-      ],
-    })),
-  });
-
-  return response.output_text.trim();
+  return (
+    response.choices[0].message.content ?? ""
+  ).trim();
 }
 
 export async function askOpenAIJson<T>(

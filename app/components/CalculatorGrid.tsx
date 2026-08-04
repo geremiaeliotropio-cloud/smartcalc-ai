@@ -13,7 +13,6 @@ export default function CalculatorGrid({
       {calculators.map((calculator) => (
         <CalculatorCard
           key={calculator.id}
-          id={calculator.id}
           href={calculator.href}
           title={calculator.title}
           description={calculator.description}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import AnalyzeWithAIButton from "../../components/ai/AnalyzeWithAIButton";
 import { saveLoanCalculation } from "../../lib/storage";
 
 export default function PrestitoPage() {
@@ -133,6 +134,7 @@ export default function PrestitoPage() {
           )}
 
           <button
+            type="button"
             onClick={calcolaPrestito}
             className="w-full rounded-xl bg-cyan-500 py-4 font-semibold text-slate-950 transition hover:bg-cyan-400"
           >
@@ -141,37 +143,53 @@ export default function PrestitoPage() {
         </div>
 
         {hasResults && (
-          <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
-            <h2 className="text-3xl font-bold text-cyan-400">
-              {formatEuro(rata)}
-            </h2>
+          <>
+            <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
+              <h2 className="text-3xl font-bold text-cyan-400">
+                {formatEuro(rata)}
+              </h2>
 
-            <p className="mt-2 text-slate-400">
-              Rata mensile
-            </p>
+              <p className="mt-2 text-slate-400">
+                Rata mensile
+              </p>
 
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
-              <div className="rounded-xl bg-slate-800 p-5">
-                <p className="text-slate-400">
-                  Interessi Totali
-                </p>
+              <div className="mt-8 grid gap-6 md:grid-cols-2">
+                <div className="rounded-xl bg-slate-800 p-5">
+                  <p className="text-slate-400">
+                    Interessi Totali
+                  </p>
 
-                <h3 className="mt-2 text-2xl font-bold">
-                  {formatEuro(interessi)}
-                </h3>
-              </div>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {formatEuro(interessi)}
+                  </h3>
+                </div>
 
-              <div className="rounded-xl bg-slate-800 p-5">
-                <p className="text-slate-400">
-                  Totale Restituito
-                </p>
+                <div className="rounded-xl bg-slate-800 p-5">
+                  <p className="text-slate-400">
+                    Totale Restituito
+                  </p>
 
-                <h3 className="mt-2 text-2xl font-bold">
-                  {formatEuro(totale)}
-                </h3>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {formatEuro(totale)}
+                  </h3>
+                </div>
               </div>
             </div>
-          </div>
+
+            <div className="mt-8 flex justify-center">
+              <AnalyzeWithAIButton
+                calculator="prestito"
+                data={{
+                  importo: Number(importo),
+                  tasso: Number(tasso),
+                  anni: Number(anni),
+                  rata,
+                  interessi,
+                  totale,
+                }}
+              />
+            </div>
+          </>
         )}
       </section>
     </main>

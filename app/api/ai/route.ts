@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 
 import { askOpenAI } from "../../lib/openaiRequest";
-import { buildSalaryPrompt } from "../../lib/prompts";
+import { buildSystemPrompt } from "../../lib/prompts";
+import { buildCalculatorPrompt } from "../../lib/calculatorPrompts";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    if (!body?.data) {
+    if (!body?.calculator || !body?.data) {
       return NextResponse.json(
         {
           message: "Dati mancanti.",
@@ -18,15 +19,19 @@ export async function POST(req: Request) {
       );
     }
 
+    const prompt = buildCalculatorPrompt(
+      body.calculator,
+      body.data
+    );
+
     const message = await askOpenAI([
       {
         role: "system",
-        content:
-          "Sei SmartCalc AI, consulente esperto di finanza personale, stipendi, mutui, prestiti e fiscalità italiana.",
+        content: buildSystemPrompt(),
       },
       {
         role: "user",
-        content: buildSalaryPrompt(body.data),
+        content: prompt,
       },
     ]);
 

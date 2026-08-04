@@ -6,6 +6,8 @@ import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
 import PrimaryButton from "../../components/common/PrimaryButton";
 
+import AnalyzeWithAIButton from "../../components/ai/AnalyzeWithAIButton";
+
 import { saveVatCalculation } from "../../lib/storage";
 
 export default function IvaPage() {
@@ -126,29 +128,43 @@ export default function IvaPage() {
         </div>
 
         {hasResults && (
-          <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-xl bg-slate-800 p-5">
-                <p className="text-slate-400">
-                  IVA
-                </p>
+          <>
+            <div className="mt-10 rounded-2xl border border-slate-800 bg-slate-900 p-8">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="rounded-xl bg-slate-800 p-5">
+                  <p className="text-slate-400">
+                    IVA
+                  </p>
 
-                <h3 className="mt-2 text-2xl font-bold text-cyan-400">
-                  {formatEuro(iva)}
-                </h3>
-              </div>
+                  <h3 className="mt-2 text-2xl font-bold text-cyan-400">
+                    {formatEuro(iva)}
+                  </h3>
+                </div>
 
-              <div className="rounded-xl bg-slate-800 p-5">
-                <p className="text-slate-400">
-                  Totale
-                </p>
+                <div className="rounded-xl bg-slate-800 p-5">
+                  <p className="text-slate-400">
+                    Totale
+                  </p>
 
-                <h3 className="mt-2 text-2xl font-bold">
-                  {formatEuro(totale)}
-                </h3>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {formatEuro(totale)}
+                  </h3>
+                </div>
               </div>
             </div>
-          </div>
+
+            <div className="mt-8 flex justify-center">
+              <AnalyzeWithAIButton
+                calculator="iva"
+                data={{
+                  imponibile: Number(importo),
+                  aliquota: Number(aliquota),
+                  iva,
+                  totale,
+                }}
+              />
+            </div>
+          </>
         )}
       </section>
     </main>

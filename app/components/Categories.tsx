@@ -1,10 +1,10 @@
 import Link from "next/link";
 import {
   Briefcase,
-  HeartPulse,
   Landmark,
   PiggyBank,
   Receipt,
+  Wallet,
 } from "lucide-react";
 
 const categories = [
@@ -17,13 +17,13 @@ const categories = [
   {
     icon: Briefcase,
     title: "Lavoro",
-    description: "Stipendio netto, RAL e tasse.",
+    description: "Stipendio netto, RAL e confronto stipendi.",
     href: "/calculators/stipendio",
   },
   {
     icon: Receipt,
     title: "Fisco",
-    description: "IVA e calcoli fiscali.",
+    description: "IVA e strumenti fiscali.",
     href: "/calculators/iva",
   },
   {
@@ -33,10 +33,10 @@ const categories = [
     href: "/calculators/interessi-composti",
   },
   {
-    icon: HeartPulse,
-    title: "Salute",
-    description: "BMI e altri strumenti dedicati.",
-    href: "/calculators",
+    icon: Wallet,
+    title: "Pensioni",
+    description: "Simulazioni pensionistiche e previdenza.",
+    href: "/calculators/pensione",
   },
 ];
 
@@ -65,7 +65,7 @@ export default function Categories() {
             <Link
               key={category.title}
               href={category.href}
-              className="group rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center transition duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:bg-slate-800"
+              className="group rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center transition duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:bg-slate-800 hover:shadow-xl hover:shadow-cyan-500/10"
             >
               <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 transition group-hover:scale-110">
                 <Icon size={30} />

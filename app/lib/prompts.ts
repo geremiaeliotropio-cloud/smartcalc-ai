@@ -57,6 +57,42 @@ Non inventare dati.
 `;
 }
 
+export function buildMortgagePrompt(
+  data: Record<string, unknown>
+) {
+  return `
+Sei SmartCalc AI.
+
+Analizza il seguente mutuo.
+
+DATI
+
+${JSON.stringify(data, null, 2)}
+
+Scrivi una risposta professionale in italiano.
+
+La risposta deve contenere:
+
+1. Riassunto del mutuo.
+
+2. Analisi della rata mensile.
+
+3. Analisi degli interessi totali.
+
+4. Valutazione della durata del mutuo.
+
+5. Vantaggi e svantaggi della simulazione.
+
+6. Consigli pratici per ridurre il costo del mutuo.
+
+7. Un giudizio finale sulla sostenibilità.
+
+Usa titoli ben separati.
+
+Non inventare dati.
+`;
+}
+
 export function buildAdvisorPrompt(data: {
   ral: number;
   eta: number;

@@ -17,34 +17,39 @@ const initialMessage: ChatMessage = {
 };
 
 export default function AIPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    if (typeof window === "undefined") {
-      return [initialMessage];
-    }
-
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-
-      return saved
-        ? (JSON.parse(saved) as ChatMessage[])
-        : [initialMessage];
-    } catch {
-      return [initialMessage];
-    }
-  });
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    initialMessage,
+  ]);
 
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
 
   useEffect(() => {
+    setMounted(true);
+
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        setMessages(JSON.parse(saved));
+      }
+    } catch {
+      // ignora eventuali dati non validi
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(messages)
     );
-  }, [messages]);
+  }, [messages, mounted]);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -54,6 +59,7 @@ export default function AIPage() {
 
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
+      block: "nearest",
     });
   }, [messages, loading]);
 
@@ -123,28 +129,29 @@ export default function AIPage() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
-      <section className="mx-auto max-w-5xl px-6 py-20">
-        <h1 className="text-5xl font-bold">
+      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-20">
+        <h1 className="text-3xl font-bold sm:text-5xl">
           🤖 SmartCalc AI
         </h1>
 
-        <p className="mt-4 text-slate-400">
-          Il tuo assistente intelligente per
-          stipendi, mutui, prestiti, pensioni,
-          IVA e finanza personale.
+        <p className="mt-3 text-sm text-slate-400 sm:mt-4 sm:text-base">
+          Il tuo assistente intelligente per stipendi,
+          mutui, prestiti, pensioni, IVA e finanza
+          personale.
         </p>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6">
           <button
+            type="button"
             onClick={clearConversation}
-            className="rounded-xl border border-red-500 px-4 py-2 text-red-400 transition hover:bg-red-500 hover:text-white"
+            className="w-full rounded-xl border border-red-500 px-4 py-3 text-red-400 transition hover:bg-red-500 hover:text-white sm:ml-auto sm:block sm:w-auto"
           >
             🗑 Cancella conversazione
           </button>
         </div>
 
-        <div className="mt-10 rounded-3xl border border-slate-800 bg-slate-900 p-6">
-          <div className="max-h-[550px] space-y-4 overflow-y-auto">
+        <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900 p-4 sm:mt-10 sm:p-6">
+          <div className="max-h-[60vh] space-y-4 overflow-y-auto sm:max-h-[550px]">
             <ChatHistory messages={messages} />
 
             {loading && <TypingIndicator />}
@@ -152,28 +159,19 @@ export default function AIPage() {
             <div ref={bottomRef} />
           </div>
 
-          <div
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                sendMessage();
-              }
-            }}
-          >
-            <ChatInput
-              value={question}
-              onChange={setQuestion}
-              onSend={sendMessage}
-            />
-          </div>
+          <ChatInput
+            value={question}
+            onChange={setQuestion}
+            onSend={sendMessage}
+          />
         </div>
 
-        <div className="mt-10">
-          <h2 className="mb-5 text-xl font-semibold">
+        <div className="mt-8 sm:mt-10">
+          <h2 className="mb-4 text-lg font-semibold sm:mb-5 sm:text-xl">
             Domande suggerite
           </h2>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {[
               "Mi conviene una RAL di 40.000 €?",
               "Come funziona l'IRPEF?",
@@ -184,8 +182,9 @@ export default function AIPage() {
             ].map((example) => (
               <button
                 key={example}
+                type="button"
                 onClick={() => setQuestion(example)}
-                className="rounded-full border border-slate-700 px-4 py-2 text-sm transition hover:border-cyan-400 hover:text-cyan-400"
+                className="rounded-full border border-slate-700 px-3 py-2 text-xs transition hover:border-cyan-400 hover:text-cyan-400 sm:px-4 sm:text-sm"
               >
                 {example}
               </button>

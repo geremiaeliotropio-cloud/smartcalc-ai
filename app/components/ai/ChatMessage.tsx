@@ -16,11 +16,20 @@ export default function ChatMessage({
       }`}
     >
       <div
-        className={`max-w-[80%] rounded-2xl px-5 py-4 ${
-          isUser
-            ? "bg-cyan-500 text-white"
-            : "bg-slate-800 text-slate-200"
-        }`}
+        className={`
+          rounded-2xl
+          px-5
+          py-4
+          whitespace-pre-wrap
+          break-words
+          max-w-[92%]
+          md:max-w-[80%]
+          ${
+            isUser
+              ? "bg-cyan-500 text-white"
+              : "bg-slate-800 text-slate-200"
+          }
+        `}
       >
         {content}
       </div>

@@ -3,30 +3,30 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="mt-24 border-t border-slate-800 bg-slate-950">
-      <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 py-10">
+    <footer className="border-t border-slate-800 bg-slate-950">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 py-12">
 
         <Link
           href="/"
-          className="flex items-center"
+          className="flex items-center gap-4"
         >
           <Image
             src="/logo.png"
             alt="SmartCalc AI"
-            width={180}
-            height={45}
-            className="hidden h-10 w-auto md:block"
+            width={48}
+            height={48}
+            className="h-12 w-12"
           />
 
-          <span className="text-2xl font-bold text-cyan-400 md:hidden">
+          <span className="text-3xl font-bold text-cyan-400">
             SmartCalc AI
           </span>
         </Link>
 
-        <p className="max-w-xl text-center text-slate-400">
-          Calcolatori intelligenti con AI per stipendi,
-          mutui, prestiti, IVA, investimenti e finanza
-          personale.
+        <p className="max-w-2xl text-center text-slate-400">
+          Calcolatori intelligenti con Intelligenza Artificiale
+          dedicati a mutui, prestiti, stipendi, pensioni,
+          investimenti e finanza personale.
         </p>
 
         <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-400">
@@ -68,7 +68,7 @@ export default function Footer() {
 
         </div>
 
-        <p className="text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-500">
           © {new Date().getFullYear()} SmartCalc AI ·
           Tutti i diritti riservati.
         </p>

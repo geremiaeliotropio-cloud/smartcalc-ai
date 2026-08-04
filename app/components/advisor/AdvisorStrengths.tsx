@@ -1,9 +1,9 @@
 interface Props {
-  strengths: string[];
+  strengths?: string[];
 }
 
 export default function AdvisorStrengths({
-  strengths,
+  strengths = [],
 }: Props) {
   return (
     <div className="rounded-3xl border border-green-500 bg-slate-900 p-6">
@@ -11,13 +11,19 @@ export default function AdvisorStrengths({
         ✅ Punti di forza
       </h2>
 
-      <ul className="space-y-3">
-        {strengths.map((item, index) => (
-          <li key={index}>
-            • {item}
-          </li>
-        ))}
-      </ul>
+      {strengths.length === 0 ? (
+        <p className="text-slate-400">
+          Nessun punto di forza disponibile.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {strengths.map((item, index) => (
+            <li key={index}>
+              • {item}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

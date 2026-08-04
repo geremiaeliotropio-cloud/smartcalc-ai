@@ -23,9 +23,25 @@ export async function POST(req: Request) {
       input: buildAdvisorPrompt(body),
     });
 
-    return NextResponse.json({
-      message: response.output_text,
-    });
+    const text = response.output_text.trim();
+
+    let result;
+
+    try {
+      result = JSON.parse(text);
+    } catch {
+      return NextResponse.json(
+        {
+          message:
+            "L'AI ha restituito un JSON non valido.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("ADVISOR ERROR:", error);
 

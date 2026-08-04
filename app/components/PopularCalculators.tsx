@@ -6,6 +6,8 @@ import CalculatorGrid from "./CalculatorGrid";
 import PrimaryButton from "./common/PrimaryButton";
 
 export default function PopularCalculators() {
+  const popularCalculators = calculators.slice(0, 6);
+
   return (
     <section className="mx-auto max-w-7xl px-6 pb-24">
       <div className="mb-12 flex items-end justify-between">
@@ -26,7 +28,7 @@ export default function PopularCalculators() {
         </Link>
       </div>
 
-      <CalculatorGrid calculators={calculators} />
+      <CalculatorGrid calculators={popularCalculators} />
     </section>
   );
 }
