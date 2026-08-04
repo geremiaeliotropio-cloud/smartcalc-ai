@@ -11,53 +11,57 @@ const categories = [
   {
     icon: Landmark,
     title: "Finanza",
-    description: "Mutui, prestiti e investimenti.",
+    description: "Mutui, prestiti e investimenti",
     href: "/calculators",
   },
   {
     icon: Briefcase,
     title: "Lavoro",
-    description: "Stipendio netto, RAL e confronto stipendi.",
+    description: "RAL e stipendio netto",
     href: "/calculators/stipendio",
   },
   {
     icon: Receipt,
     title: "Fisco",
-    description: "IVA e strumenti fiscali.",
+    description: "IVA e imposte",
     href: "/calculators/iva",
   },
   {
     icon: PiggyBank,
     title: "Risparmio",
-    description: "Interessi composti e crescita del capitale.",
+    description: "Interessi composti",
     href: "/calculators/interessi-composti",
   },
   {
     icon: Wallet,
-    title: "Pensioni",
-    description: "Simulazioni pensionistiche e previdenza.",
+    title: "Pensione",
+    description: "Previdenza e TFR",
     href: "/calculators/pensione",
   },
 ];
 
 export default function Categories() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24">
-      <div className="text-center">
-        <p className="font-semibold text-cyan-400">
-          Esplora per categoria
-        </p>
+    <section className="mx-auto max-w-7xl px-5 py-16 md:px-6 md:py-24">
 
-        <h2 className="mt-2 text-4xl font-bold">
-          Tutti i calcolatori organizzati
+      <div className="text-center">
+
+        <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-300">
+          📂 Categorie
+        </span>
+
+        <h2 className="mt-5 text-3xl font-bold md:text-5xl">
+          Scegli una categoria
         </h2>
 
-        <p className="mt-4 text-slate-400">
-          Clicca su una categoria per iniziare.
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-400 md:text-lg">
+          Accedi rapidamente ai principali strumenti di SmartCalc AI.
         </p>
+
       </div>
 
-      <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+
         {categories.map((category) => {
           const Icon = category.icon;
 
@@ -65,27 +69,33 @@ export default function Categories() {
             <Link
               key={category.title}
               href={category.href}
-              className="group rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center transition duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:bg-slate-800 hover:shadow-xl hover:shadow-cyan-500/10"
+              className="group rounded-3xl border border-slate-800 bg-slate-900/70 p-6 text-center backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500 hover:bg-slate-800"
             >
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 transition group-hover:scale-110">
+
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 transition-all duration-300 group-hover:scale-110 group-hover:bg-cyan-500/20">
+
                 <Icon size={30} />
+
               </div>
 
-              <h3 className="text-xl font-bold transition group-hover:text-cyan-400">
+              <h3 className="mt-5 text-lg font-bold transition-colors group-hover:text-cyan-400">
                 {category.title}
               </h3>
 
-              <p className="mt-3 text-sm text-slate-400">
+              <p className="mt-2 text-xs leading-5 text-slate-400 md:text-sm">
                 {category.description}
               </p>
 
-              <div className="mt-6 font-semibold text-cyan-400">
+              <div className="mt-5 text-sm font-semibold text-cyan-400">
                 Apri →
               </div>
+
             </Link>
           );
         })}
+
       </div>
+
     </section>
   );
 }

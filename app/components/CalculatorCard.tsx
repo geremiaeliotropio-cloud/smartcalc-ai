@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { LucideIcon } from "lucide-react";
-
-import PrimaryButton from "./common/PrimaryButton";
+import { LucideIcon, ArrowRight } from "lucide-react";
 
 interface CalculatorCardProps {
   href: string;
@@ -19,30 +17,38 @@ export default function CalculatorCard({
   icon: Icon,
 }: CalculatorCardProps) {
   return (
-    <Link href={href} className="block">
-      <div className="group h-full rounded-3xl border border-slate-800 bg-slate-900 p-6 transition duration-300 hover:-translate-y-2 hover:border-cyan-500 hover:shadow-xl hover:shadow-cyan-500/10">
-        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400">
-          <Icon size={28} />
+    <Link href={href} className="group block h-full">
+      <article className="flex h-full flex-col rounded-3xl border border-slate-800 bg-slate-900/70 p-6 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:bg-slate-900 hover:shadow-2xl hover:shadow-cyan-500/10">
+
+        {/* Icona */}
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 transition-all duration-300 group-hover:scale-110 group-hover:bg-cyan-500/20">
+          <Icon size={30} />
         </div>
 
-        <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-400">
+        {/* Categoria */}
+        <span className="mt-5 w-fit rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300">
           {category}
         </span>
 
-        <h3 className="mt-5 text-2xl font-bold">
+        {/* Titolo */}
+        <h3 className="mt-5 text-xl font-bold leading-tight transition-colors duration-300 group-hover:text-cyan-400 md:text-2xl">
           {title}
         </h3>
 
-        <p className="mt-3 text-slate-400">
+        {/* Descrizione */}
+        <p className="mt-3 flex-1 text-sm leading-6 text-slate-400 md:text-base">
           {description}
         </p>
 
+        {/* Bottone */}
         <div className="mt-8">
-          <PrimaryButton className="w-full">
-            Apri Calcolatore
-          </PrimaryButton>
+          <div className="flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition-all duration-300 group-hover:bg-cyan-400">
+            <span>Apri calcolatore</span>
+            <ArrowRight size={18} />
+          </div>
         </div>
-      </div>
+
+      </article>
     </Link>
   );
 }
